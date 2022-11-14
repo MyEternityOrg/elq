@@ -8,4 +8,16 @@ from mixin import BaseClassContextMixin
 
 class IndexPageView(BaseClassContextMixin, TemplateView):
     title = 'Электронная очередь'
-    template_name = 'app_main/app_main_common.html'
+    template_name = 'app_main/index.html'
+
+    def __init__(self, **kwargs):
+        super(IndexPageView, self).__init__(**kwargs)
+        self.object = None
+        self.is_ajax = False
+
+    def post(self, request, *args, **kwargs):
+        self.is_ajax = True if request.headers.get('X-Requested-With') == 'XMLHttpRequest' else False
+        if self.is_ajax:
+            return JsonResponse(
+                {'result': 1, 'object': 'elq', 'data': render_to_string('app_main/inc/content.html')}
+            )
