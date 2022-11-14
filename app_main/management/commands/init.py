@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from app_main.models import *
 from app_devices.models import *
+from elq.settings import *
 
 
 def get_status(status_id: int):
@@ -13,7 +14,6 @@ def get_status(status_id: int):
 class Command(BaseCommand):
     def handle(self, *args, **options):
         print('Initializing database...')
-
         print('Creating default users...')
         User.objects.all().delete()
         User.objects.create(id=1, username='root',
@@ -54,16 +54,17 @@ class Command(BaseCommand):
         Cash.objects.create(name='Касса №1', ip_address='127.0.0.1', pg_db_name='set_operday', pg_login='set',
                             pg_password='set', printer_guid=Printer.objects.first())
 
-        print('Creating demo wares...')
-        Ware.objects.all().delete()
-        Ware.objects.create(code=48566, full_name='Пицца ароматная, вкусная, с сыром маскароне',
-                            short_name='Пицца 4 сыра',
-                            department_guid=Department.objects.get(guid='0d7aa2be-8b1c-4d1d-9003-0da8d0527693'))
-        Ware.objects.create(code=43221, full_name='Шаурма со свининой', short_name='Шаурма св',
-                            department_guid=Department.objects.get(guid='0ca520d0-2be8-4336-9555-ab8411729862'))
-        Ware.objects.create(code=51356, full_name='Вок острый, с пряным соусом', short_name='Вок остр. пр. соус',
-                            department_guid=Department.objects.get(guid='55f6079a-ea34-4303-a531-5fc80d00a7c2'))
-        Ware.objects.create(code=51358, full_name='Вок острый, с гречневой лапшой', short_name='Вок остр. греча',
-                            department_guid=Department.objects.get(guid='55f6079a-ea34-4303-a531-5fc80d00a7c2'))
-        Ware.objects.create(code=12356, full_name='Салат оливье, новогодний', short_name='Салат оливье',
-                            department_guid=Department.objects.get(guid='dd5637f2-a982-4de7-9962-54c7790f7787'))
+        if DEBUG:
+            print('Creating demo wares...')
+            Ware.objects.all().delete()
+            Ware.objects.create(code=48566, full_name='Пицца ароматная, вкусная, с сыром маскароне',
+                                short_name='Пицца 4 сыра',
+                                department_guid=Department.objects.get(guid='0d7aa2be-8b1c-4d1d-9003-0da8d0527693'))
+            Ware.objects.create(code=43221, full_name='Шаурма со свининой', short_name='Шаурма св',
+                                department_guid=Department.objects.get(guid='0ca520d0-2be8-4336-9555-ab8411729862'))
+            Ware.objects.create(code=51356, full_name='Вок острый, с пряным соусом', short_name='Вок остр. пр. соус',
+                                department_guid=Department.objects.get(guid='55f6079a-ea34-4303-a531-5fc80d00a7c2'))
+            Ware.objects.create(code=51358, full_name='Вок острый, с гречневой лапшой', short_name='Вок остр. греча',
+                                department_guid=Department.objects.get(guid='55f6079a-ea34-4303-a531-5fc80d00a7c2'))
+            Ware.objects.create(code=12356, full_name='Салат оливье, новогодний', short_name='Салат оливье',
+                                department_guid=Department.objects.get(guid='dd5637f2-a982-4de7-9962-54c7790f7787'))
