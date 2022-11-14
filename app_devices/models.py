@@ -9,9 +9,13 @@ from django.db.models import Max, Count
 class Printer(models.Model):
     """
         Сетевой принтер
+
         guid : Идентификатор.
+
         name : Наименование.
+
         ip_address : Адрес устройства в сети.
+
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
                             verbose_name='ИД устройства', editable=False)
@@ -30,14 +34,23 @@ class Printer(models.Model):
 class Cash(models.Model):
     """
         Касса
+
         guid : Идентификатор.
+
         name : Наименование кассы.
+
         ip_address : Адрес устройства в сети.
+
         cash_printer : Принтер. Если задан, то касса печатает на нем полученные данные заказа.
+
         pg_login : Логин для postgre кассы.
+
         pg_password : Пароль для postgre кассы.
+
         pd_db_name : Имя БД postgre кассы.
+
         request_interval: Интервал опроса кассы в миллисекундах
+
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
                             verbose_name='ИД устройства', editable=False)
