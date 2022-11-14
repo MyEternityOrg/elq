@@ -22,6 +22,8 @@ class Command(BaseCommand):
         User.objects.create(id=2, username='shop',
                             password='pbkdf2_sha256$390000$7KYChLAKiOnRkiV7ozUGMz$mQ/ZUcfI3NU0+07RmdPwmKYKvn2pID5faYqTzOZ2tWg=',
                             email='shop@pokupochka.ru', is_staff=True, is_active=True, is_superuser=True)
+        for i in range(1, 9):
+            User.objects.create(id=i + 2, username=f'reserved_{i}', is_staff=True, is_active=True, is_superuser=True)
 
         print('Creating departments...')
         Department.objects.all().delete()
@@ -54,7 +56,7 @@ class Command(BaseCommand):
 
         print('Creating demo wares...')
         Ware.objects.all().delete()
-        Ware.objects.create(code=48566, full_name='Пицца ароматная, вкусная, с сыром маскарпоне',
+        Ware.objects.create(code=48566, full_name='Пицца ароматная, вкусная, с сыром маскароне',
                             short_name='Пицца 4 сыра',
                             department_guid=Department.objects.get(guid='0d7aa2be-8b1c-4d1d-9003-0da8d0527693'))
         Ware.objects.create(code=43221, full_name='Шаурма со свининой', short_name='Шаурма св',
