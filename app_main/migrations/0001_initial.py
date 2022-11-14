@@ -6,7 +6,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,9 +15,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Department',
             fields=[
-                ('guid', models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True, serialize=False, verbose_name='ИД подразделения')),
-                ('name', models.CharField(db_column='name', max_length=128, unique=True, verbose_name='Название отдела')),
-                ('create_date_time', models.DateTimeField(auto_now_add=True, db_column='dts', verbose_name='Дата заведения отдела')),
+                ('guid',
+                 models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True,
+                                  serialize=False, verbose_name='ИД подразделения')),
+                ('name',
+                 models.CharField(db_column='name', max_length=128, unique=True, verbose_name='Название отдела')),
+                ('create_date_time',
+                 models.DateTimeField(auto_now_add=True, db_column='dts', verbose_name='Дата заведения отдела')),
             ],
             options={
                 'verbose_name': 'Отдел',
@@ -29,10 +32,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Document',
             fields=[
-                ('guid', models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True, serialize=False, verbose_name='ИД документа')),
-                ('number', models.IntegerField(db_column='number', db_index=True, default=0, verbose_name='Номер заказа')),
-                ('create_date', models.DateField(auto_now_add=True, db_column='create_date', db_index=True, verbose_name='Дата документа')),
-                ('create_time', models.TimeField(auto_now_add=True, db_column='create_time', db_index=True, verbose_name='Время документа')),
+                ('guid',
+                 models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True,
+                                  serialize=False, verbose_name='ИД документа')),
+                ('number',
+                 models.IntegerField(db_column='number', db_index=True, default=0, verbose_name='Номер заказа')),
+                ('create_date', models.DateField(auto_now_add=True, db_column='create_date', db_index=True,
+                                                 verbose_name='Дата документа')),
+                ('create_time', models.TimeField(auto_now_add=True, db_column='create_time', db_index=True,
+                                                 verbose_name='Время документа')),
             ],
             options={
                 'verbose_name': 'Документ',
@@ -44,8 +52,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Status',
             fields=[
-                ('id', models.IntegerField(db_column='id', editable=False, primary_key=True, serialize=False, verbose_name='ИД статуса')),
-                ('name', models.CharField(db_column='name', max_length=64, unique=True, verbose_name='Название статуса')),
+                ('id', models.IntegerField(db_column='id', editable=False, primary_key=True, serialize=False,
+                                           verbose_name='ИД статуса')),
+                ('name',
+                 models.CharField(db_column='name', max_length=64, unique=True, verbose_name='Название статуса')),
                 ('finished', models.BooleanField(db_column='finished', default=False, verbose_name='Конечный статус')),
                 ('show', models.BooleanField(db_column='show', default=True, verbose_name='Отображение статуса')),
             ],
@@ -58,12 +68,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Ware',
             fields=[
-                ('guid', models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True, serialize=False, verbose_name='ИД товара')),
-                ('code', models.CharField(db_column='code', max_length=16, unique=True, verbose_name='Локальный код товара')),
-                ('full_name', models.CharField(db_column='f_name', max_length=128, verbose_name='Название товара (полное)')),
-                ('short_name', models.CharField(db_column='s_name', max_length=64, verbose_name='Название товара (сокращенное)')),
-                ('create_date_time', models.DateTimeField(auto_now_add=True, db_column='dts', verbose_name='Дата заведения товара')),
-                ('department_guid', models.ForeignKey(db_column='department_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.department', verbose_name='Отдел производства товара')),
+                ('guid',
+                 models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True,
+                                  serialize=False, verbose_name='ИД товара')),
+                ('code',
+                 models.CharField(db_column='code', max_length=16, unique=True, verbose_name='Локальный код товара')),
+                ('full_name',
+                 models.CharField(db_column='f_name', max_length=128, verbose_name='Название товара (полное)')),
+                ('short_name',
+                 models.CharField(db_column='s_name', max_length=64, verbose_name='Название товара (сокращенное)')),
+                ('create_date_time',
+                 models.DateTimeField(auto_now_add=True, db_column='dts', verbose_name='Дата заведения товара')),
+                ('department_guid',
+                 models.ForeignKey(db_column='department_guid', on_delete=django.db.models.deletion.CASCADE,
+                                   to='app_main.department', verbose_name='Отдел производства товара')),
             ],
             options={
                 'verbose_name': 'Товар',
@@ -74,9 +92,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StatusFlow',
             fields=[
-                ('guid', models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True, serialize=False, verbose_name='ИД записи')),
-                ('current_status_guid', models.ForeignKey(db_column='current_status_guid', on_delete=django.db.models.deletion.DO_NOTHING, related_name='current_status', to='app_main.status', verbose_name='Текущий статус')),
-                ('next_status_guid', models.ForeignKey(db_column='next_status_guid', on_delete=django.db.models.deletion.DO_NOTHING, related_name='next_status', to='app_main.status', verbose_name='Следующий статус')),
+                ('guid',
+                 models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True,
+                                  serialize=False, verbose_name='ИД записи')),
+                ('current_status_guid',
+                 models.ForeignKey(db_column='current_status_guid', on_delete=django.db.models.deletion.DO_NOTHING,
+                                   related_name='current_status', to='app_main.status', verbose_name='Текущий статус')),
+                ('next_status_guid',
+                 models.ForeignKey(db_column='next_status_guid', on_delete=django.db.models.deletion.DO_NOTHING,
+                                   related_name='next_status', to='app_main.status', verbose_name='Следующий статус')),
             ],
             options={
                 'verbose_name': 'Смена статуса',
@@ -87,11 +111,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DocumentWare',
             fields=[
-                ('guid', models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True, serialize=False, verbose_name='ИД товара документа')),
+                ('guid',
+                 models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True,
+                                  serialize=False, verbose_name='ИД товара документа')),
                 ('ware_count', models.IntegerField(db_column='cnt', default=1, verbose_name='Количество')),
-                ('document_guid', models.ForeignKey(db_column='document_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.document', verbose_name='ИД документа')),
-                ('status_guid', models.ForeignKey(db_column='status_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.status', verbose_name='Статус записи')),
-                ('ware_guid', models.ForeignKey(db_column='ware_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.ware', verbose_name='ИД товара')),
+                ('document_guid',
+                 models.ForeignKey(db_column='document_guid', on_delete=django.db.models.deletion.CASCADE,
+                                   to='app_main.document', verbose_name='ИД документа')),
+                ('status_guid', models.ForeignKey(db_column='status_guid', on_delete=django.db.models.deletion.CASCADE,
+                                                  to='app_main.status', verbose_name='Статус записи')),
+                ('ware_guid', models.ForeignKey(db_column='ware_guid', on_delete=django.db.models.deletion.CASCADE,
+                                                to='app_main.ware', verbose_name='ИД товара')),
             ],
             options={
                 'verbose_name': 'Состав документа',
@@ -102,10 +132,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DocumentHistory',
             fields=[
-                ('guid', models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True, serialize=False, verbose_name='ИД записи')),
-                ('create_date_time', models.DateTimeField(auto_now_add=True, db_column='dts', verbose_name='Дата создания')),
-                ('document_ware_guid', models.ForeignKey(db_column='document_ware_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.documentware', verbose_name='ИД записи документа')),
-                ('status_guid', models.ForeignKey(db_column='status_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.status', verbose_name='Статус')),
+                ('guid',
+                 models.CharField(db_column='guid', default=uuid.uuid4, editable=False, max_length=64, primary_key=True,
+                                  serialize=False, verbose_name='ИД записи')),
+                ('create_date_time',
+                 models.DateTimeField(auto_now_add=True, db_column='dts', verbose_name='Дата создания')),
+                ('document_ware_guid',
+                 models.ForeignKey(db_column='document_ware_guid', on_delete=django.db.models.deletion.CASCADE,
+                                   to='app_main.documentware', verbose_name='ИД записи документа')),
+                ('status_guid', models.ForeignKey(db_column='status_guid', on_delete=django.db.models.deletion.CASCADE,
+                                                  to='app_main.status', verbose_name='Статус')),
             ],
             options={
                 'verbose_name': 'История документа',
@@ -116,11 +152,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='document',
             name='status_guid',
-            field=models.ForeignKey(db_column='status_guid', on_delete=django.db.models.deletion.CASCADE, to='app_main.status', verbose_name='Статус заказа'),
+            field=models.ForeignKey(db_column='status_guid', on_delete=django.db.models.deletion.CASCADE,
+                                    to='app_main.status', verbose_name='Статус заказа'),
         ),
         migrations.AddConstraint(
             model_name='statusflow',
-            constraint=models.UniqueConstraint(fields=('current_status_guid', 'next_status_guid'), name='app_main_statusflow_unique'),
+            constraint=models.UniqueConstraint(fields=('current_status_guid', 'next_status_guid'),
+                                               name='app_main_statusflow_unique'),
         ),
         migrations.AddConstraint(
             model_name='document',
