@@ -10,7 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include("app_users.urls")),
     path('devices/', include("app_devices.urls")),
-    path('', IndexPageView.as_view(), name='index'),
+    path('', include("app_main.urls")),
 ]
 
 if settings.DEBUG:

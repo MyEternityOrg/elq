@@ -9,5 +9,5 @@ from .views import *
 app_name = 'main'
 
 urlpatterns = [
-    path('', IndexPageView.as_view(),  'index'),
+    path('', IndexPageView.as_view(), name='index'),
 ]
