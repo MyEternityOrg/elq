@@ -115,21 +115,21 @@ class StatusFlow(models.Model):
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД записи', editable=False)
-    current_status_guid = models.ForeignKey(Status, db_column='current_status_guid', verbose_name='Текущий статус',
-                                            related_name='current_status',
-                                            on_delete=models.CASCADE)
-    next_status_guid = models.ForeignKey(Status, db_column='next_status_guid', verbose_name='Следующий статус',
-                                         related_name='next_status',
-                                         on_delete=models.CASCADE)
+    current_status_id = models.ForeignKey(Status, db_column='current_status_id', verbose_name='Текущий статус',
+                                          related_name='current_status',
+                                          on_delete=models.CASCADE)
+    next_status_id = models.ForeignKey(Status, db_column='next_status_id', verbose_name='Следующий статус',
+                                       related_name='next_status',
+                                       on_delete=models.CASCADE)
     create_date_time = models.DateTimeField(auto_now_add=True, editable=False,
                                             verbose_name='Дата записи', db_column='dts')
 
     def __str__(self):
-        return f'{self.current_status_guid.name} -> {self.next_status_guid.name}'
+        return f'{self.current_status_id.name} -> {self.next_status_id.name}'
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['current_status_guid', 'next_status_guid'],
+            models.UniqueConstraint(fields=['current_status_id', 'next_status_id'],
                                     name="%(app_label)s_%(class)s_unique"),
         ]
         db_table = 'status_flow'
@@ -155,8 +155,8 @@ class Document(models.Model):
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД документа', editable=False)
     number = models.IntegerField(default=0, verbose_name='Номер заказа', db_index=True, db_column='number')
-    status_guid = models.ForeignKey(Status, verbose_name='Статус заказа', on_delete=models.CASCADE,
-                                    db_column='status_guid')
+    status_id = models.ForeignKey(Status, verbose_name='Статус заказа', on_delete=models.CASCADE,
+                                  db_column='status_id')
     create_date = models.DateField(auto_now_add=True, editable=False,
                                    verbose_name='Дата документа', db_index=True, db_column='create_date')
     create_time = models.TimeField(auto_now_add=True, editable=False,
@@ -192,8 +192,8 @@ class DocumentWare(models.Model):
                                       db_column='document_guid')
     ware_guid = models.ForeignKey(Ware, on_delete=models.CASCADE, verbose_name='ИД товара', db_column='ware_guid')
     ware_count = models.IntegerField(default=1, verbose_name='Количество', db_column='cnt')
-    status_guid = models.ForeignKey(Status, on_delete=models.CASCADE, verbose_name='Статус записи',
-                                    db_column='status_guid')
+    status_id = models.ForeignKey(Status, on_delete=models.CASCADE, verbose_name='Статус записи',
+                                  db_column='status_id')
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='ИД Пользователя')
 
     class Meta:
@@ -220,7 +220,7 @@ class DocumentHistory(models.Model):
                             verbose_name='ИД записи', editable=False)
     document_ware_guid = models.ForeignKey(DocumentWare, on_delete=models.CASCADE, verbose_name='ИД записи документа',
                                            db_column='document_ware_guid')
-    status_guid = models.ForeignKey(Status, on_delete=models.CASCADE, verbose_name='Статус', db_column='status_guid')
+    status_id = models.ForeignKey(Status, on_delete=models.CASCADE, verbose_name='Статус', db_column='status_id')
     create_date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_column='dts')
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='ИД Пользователя')
 
