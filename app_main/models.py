@@ -12,7 +12,7 @@ class Department(models.Model):
         name : Наименование отдела.
         create_date_time : Дата/время создания записи.
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД подразделения', editable=False)
     name = models.CharField(null=False, max_length=128, verbose_name='Название отдела', unique=True, db_column='name')
     create_date_time = models.DateTimeField(auto_now_add=True, editable=False,
@@ -37,7 +37,7 @@ class Ware(models.Model):
         department_guid : Отдел, где производится товар.
         create_date_time : Дата/время создания записи.
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД товара', editable=False)
     code = models.CharField(null=False, max_length=16, verbose_name='Локальный код товара', unique=True,
                             db_column='code')
@@ -69,6 +69,7 @@ class Status(models.Model):
     id = models.IntegerField(primary_key=True, db_column='id', verbose_name='ИД статуса', editable=False)
     name = models.CharField(null=False, max_length=64, verbose_name='Название статуса', unique=True, db_column='name')
     finished = models.BooleanField(default=False, verbose_name='Конечный статус', db_column='finished')
+    show = models.BooleanField(default=True, verbose_name='Отображение статуса', db_column='show')
 
     def __str__(self):
         return f'{self.name}'
@@ -86,7 +87,7 @@ class StatusFlow(models.Model):
         current_status : Текущий статус.
         next_status : Следующий возможный статус.
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД записи', editable=False)
     current_status_guid = models.ForeignKey(Status, db_column='current_status_guid', verbose_name='Текущий статус',
                                             related_name='current_status',
@@ -100,7 +101,8 @@ class StatusFlow(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['current_status_guid', 'next_status_guid'], name="%(app_label)s_%(class)s_unique"),
+            models.UniqueConstraint(fields=['current_status_guid', 'next_status_guid'],
+                                    name="%(app_label)s_%(class)s_unique"),
         ]
         db_table = 'status_flow'
         verbose_name = 'Смена статуса'
@@ -116,7 +118,7 @@ class Document(models.Model):
         create_date : Дата создания документа.
         create_time : Время создания документа.
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД документа', editable=False)
     number = models.IntegerField(default=0, verbose_name='Номер заказа', db_index=True, db_column='number')
     status_guid = models.ForeignKey(Status, verbose_name='Статус заказа', on_delete=models.CASCADE,
@@ -145,7 +147,7 @@ class DocumentWare(models.Model):
         ware_count : Количество товара.
         status : Статус записи.
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД товара документа', editable=False)
     document_guid = models.ForeignKey(Document, on_delete=models.CASCADE, verbose_name='ИД документа',
                                       db_column='document_guid')
@@ -168,7 +170,7 @@ class DocumentHistory(models.Model):
         status : Статус.
         create_date_time : Дата/время изменения.
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД записи', editable=False)
     document_ware_guid = models.ForeignKey(DocumentWare, on_delete=models.CASCADE, verbose_name='ИД записи документа',
                                            db_column='document_ware_guid')

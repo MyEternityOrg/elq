@@ -8,13 +8,10 @@ from django.db.models import Max, Count
 
 class Printer(models.Model):
     """
-        Сетевой принтер.
-
-        guid : Идентификатор
-
-        name : Наименование
-
-        ip_address : Адрес устройства в сети
+        Сетевой принтер
+        guid : Идентификатор.
+        name : Наименование.
+        ip_address : Адрес устройства в сети.
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
                             verbose_name='ИД устройства', editable=False)
