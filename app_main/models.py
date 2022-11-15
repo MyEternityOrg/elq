@@ -50,6 +50,7 @@ class Ware(models.Model):
 
         create_date_time : Дата/время создания записи.
 
+        catch_quantity : Из чеков будет отбираться только тот товар, количество которого больше или равно заданному.
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД товара', editable=False)
@@ -63,6 +64,7 @@ class Ware(models.Model):
                                         verbose_name='Отдел производства товара', db_column='department_guid')
     create_date_time = models.DateTimeField(auto_now_add=True, editable=False,
                                             verbose_name='Дата заведения товара', db_column='dts')
+    catch_quantity = models.FloatField(default=1, null=False, verbose_name='Минимальный порог', db_column='catch_qty')
 
     def __str__(self):
         return f'{self.code} {self.short_name} - {self.department_guid.name}'
