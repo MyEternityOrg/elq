@@ -1,17 +1,26 @@
-<div class="row">
-    <div class="col-sm">
-        Готовится
-        <div class="container">
+<div class="row" style="margin: 3px">
+    <div class="col display-1" style="padding: 0; margin: 1px">
+        <div class="row" style="margin-left: 1px; margin-bottom: 1px; background-color: lightgray">
+            <strong>Готовится</strong>
         </div>
+        {% for object in object_list %}
+            {% if object.status_id.id == 1 %}
+                <div class="container" style="background-color: gray; margin: 1px">
+                    {% include 'app_main/inc/doc_text.html' %}
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-    <div class="col-sm">
-        Готовится
-        <div class="container">
+    <div class="col display-1" style="padding: 0; margin: 1px;">
+        <div class="row" style="margin-left: 1px; margin-bottom: 1px; background-color: lightgray">
+            <strong>Готов</strong>
         </div>
-    </div>
-    <div class="col-sm">
-        Готов к выдаче
-        <div class="container">
-        </div>
+        {% for object in object_list %}
+            {% if object.status_id.id == 2 %}
+                <div class="container" style="background-color: #c89ba0; margin: 1px">
+                    {% include 'app_main/inc/doc_text.html' %}
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </div>

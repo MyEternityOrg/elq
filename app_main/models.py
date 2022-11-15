@@ -103,6 +103,10 @@ class Status(models.Model):
         """
         return Status.objects.filter(finished=False, show=True).order_by('id').first()
 
+    @staticmethod
+    def get_dashboard_statuses():
+        return [s.id for s in Status.objects.filter(finished=False, show=True).order_by('id')]
+
     def __str__(self):
         return f'{self.name}'
 
@@ -173,6 +177,9 @@ class Document(models.Model):
                                    verbose_name='Дата документа', db_index=True, db_column='create_date')
     create_time = models.TimeField(auto_now_add=True, editable=False,
                                    verbose_name='Время документа', db_index=True, db_column='create_time')
+
+    def __str__(self):
+        return f'{self.number}'
 
     @staticmethod
     def create_document():
