@@ -1,6 +1,9 @@
 import datetime
 import uuid
 
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -91,6 +94,15 @@ class Status(models.Model):
     create_date_time = models.DateTimeField(auto_now_add=True, editable=False,
                                             verbose_name='Дата записи', db_column='dts')
 
+    @staticmethod
+    def get_initial_status():
+        """
+        Получает начальный статус системы.
+        
+        :return: Статус, первый, который не является конечным и отображается на dashboard
+        """
+        return Status.objects.filter(finished=False, show=True).order_by('id').first()
+
     def __str__(self):
         return f'{self.name}'
 
@@ -162,6 +174,21 @@ class Document(models.Model):
     create_time = models.TimeField(auto_now_add=True, editable=False,
                                    verbose_name='Время документа', db_index=True, db_column='create_time')
 
+    @staticmethod
+    def create_document():
+        """
+        Создает электронной очереди новый документ для заполнения товарами.
+
+        :return: Созданный документ
+        """
+        doc = Document.objects.filter(create_date=datetime.date.today()).order_by('create_time').last()
+        if doc:
+            return Document.objects.create(number=doc.number + 1,
+                                           status_id=Status.get_initial_status())
+        else:
+            return Document.objects.create(number=1,
+                                           status_id=Status.get_initial_status())
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['number', 'create_date'], name="%(app_label)s_%(class)s_unique"),
@@ -196,6 +223,36 @@ class DocumentWare(models.Model):
                                   db_column='status_id')
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='ИД Пользователя')
 
+    def __str__(self):
+        return f'({self.document_guid.create_date}) {self.document_guid.number}: {self.ware_guid.short_name} ' \
+               f'{self.ware_count}'
+
+    @staticmethod
+    def add_ware(document_guid, ware_guid, ware_count, user_id=1):
+        """
+        Добавить строчку товара в документ
+
+        :param document_guid: Идентификатор документа.
+        :param ware_guid:  Идентификатор товара.
+        :param ware_count: Количество товара (будет увеличено на заданное количество, если существует).
+        :param user_id: Пользователь-редактор.
+        :return: Строка документа или None
+        """
+        ware = Ware.objects.filter(guid=ware_guid).first()
+        user = User.objects.filter(id=user_id).first()
+        if ware is not None:
+            doc = Document.objects.filter(guid=document_guid).first()
+            line = DocumentWare.objects.filter(document_guid=doc.guid, ware_guid=ware.guid).first()
+            if line is None:
+                line = DocumentWare.objects.create(document_guid=doc, ware_guid=ware, ware_count=ware_count,
+                                                   status_id=Status.get_initial_status(), user_id=user)
+            else:
+                line.ware_count = line.ware_count + ware_count
+                line.user_id = user
+                line.save()
+            return line
+        return None
+
     class Meta:
         db_table = 'document_ware'
         verbose_name = 'Состав документа'
@@ -223,6 +280,11 @@ class DocumentHistory(models.Model):
     status_id = models.ForeignKey(Status, on_delete=models.CASCADE, verbose_name='Статус', db_column='status_id')
     create_date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_column='dts')
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='ИД Пользователя')
+
+    @receiver(post_save, sender=DocumentWare)
+    def create_article(sender, instance, created, **kwargs):
+        DocumentHistory.objects.create(document_ware_guid=instance, status_id=instance.status_id,
+                                       user_id=instance.user_id)
 
     class Meta:
         db_table = 'document_history'
