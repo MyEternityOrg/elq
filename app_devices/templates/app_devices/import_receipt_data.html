@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block css %}
     <style>
+        body {
+            background-color: lightgray;
+        }
+
         .row {
             margin-bottom: 10px;
         }
@@ -16,8 +20,7 @@
                 2},{"ware_code": "12425","ware_count": 1},{"ware_code": "72544","ware_count": 1}]}
             </div>
             <div class="row">Данный формат json необходимо передать в данные запроса с заголовком key:API_KEY, ниже
-                пример с
-                curl:
+                пример с curl:
             </div>
             <div class="row">curl -H "key:API_KEY" --data "@test.json" http://localhost/devices/import_receipt/ >
                 reply.json
