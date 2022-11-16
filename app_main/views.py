@@ -29,3 +29,7 @@ class IndexPageView(BaseClassContextMixin, ListView):
     def get_queryset(self):
         return Document.objects.filter(status_id__in=Status.get_dashboard_statuses(),
                                        create_date=datetime.date.today()).order_by('create_time')
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexPageView, self).get_context_data(**kwargs)
+        return context
