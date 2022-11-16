@@ -5,9 +5,9 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 from .views import *
 
-
 app_name = 'main'
 
 urlpatterns = [
     path('', IndexPageView.as_view(), name='index'),
+    path('panel/', PanelPageView.as_view(), name='dashboard'),
 ]
