@@ -1,6 +1,32 @@
 {% extends 'base.html' %}
+{% block css %}
+    <style>
+        body {
+            background-color: lightgray;
+        }
+
+        .row {
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
 {% block content %}
-    <h4>Данная веб страница принимает json данные через POST запрос.</h4>
+    <div class="container-fluid container-lg h3" style="margin-top: 20px">
+        <div class="col">
+            <div class="row">Данная веб страница принимает json данные через POST запрос.</div>
+            <div class="row">Образец запроса:</div>
+            <div class="row">{"cash_id": 1, "check_id": 2, "check_date": "2022-11-16", "wares": [{"ware_code":
+                "12415","ware_count":
+                2},{"ware_code": "12425","ware_count": 1},{"ware_code": "72544","ware_count": 1}]}
+            </div>
+            <div class="row">Данный формат json необходимо передать в данные запроса с заголовком key:API_KEY, ниже
+                пример с curl:
+            </div>
+            <div class="row">curl -H "key:API_KEY" --data "@test.json" http://localhost/devices/import_receipt/ >
+                reply.json
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block script %}
 {% endblock %}
