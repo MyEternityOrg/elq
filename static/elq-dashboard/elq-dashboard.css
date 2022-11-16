@@ -1,28 +1,37 @@
+@font-face {
+    font-family: 'TT Backwards Script';
+    src: url("elq-dashboard.ttf") format("truetype");
+}
+
 body {
-	height: 100%;
-	overflow: hidden;
-	background-color: lightgray;
-	font-family: 'TT Backwards Script'
+    height: 100%;
+    overflow: hidden;
+    background-color: lightgray;
+    font-family: "TT Backwards Script", serif;
 }
 
 .row .col {
-	margin: 1px;
-	padding: 0;
+    margin: 1px;
+    padding: 0;
 }
 
 .container {
-	margin-bottom: 1px;
+    margin-bottom: 1px;
+}
+
+.elq-header {
+    background-color: lightgray;
 }
 
 .elq-finished {
-	background-color: #d9b9b6;
+    background-color: #d9b9b6;
 }
 
 .elq-work {
-	background-color: gray;
+    background-color: gray;
 }
 
 img {
-	margin-bottom: 10px;
-	padding: 0;
+    margin-bottom: 10px;
+    padding: 0;
 }
