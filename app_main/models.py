@@ -3,6 +3,7 @@ import uuid
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.utils.timezone import now
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -175,7 +176,7 @@ class Document(models.Model):
     number = models.IntegerField(default=0, verbose_name='Номер заказа', db_index=True, db_column='number')
     status_id = models.ForeignKey(Status, verbose_name='Статус заказа', on_delete=models.CASCADE,
                                   db_column='status_id')
-    create_date = models.DateField(auto_now_add=True, editable=False,
+    create_date = models.DateField(auto_now_add=False, editable=False, default=now,
                                    verbose_name='Дата документа', db_index=True, db_column='create_date')
     create_time = models.TimeField(auto_now_add=True, editable=False,
                                    verbose_name='Время документа', db_index=True, db_column='create_time')
@@ -184,18 +185,22 @@ class Document(models.Model):
         return f'{self.number}'
 
     @staticmethod
-    def create_document():
+    def create_document(dts: datetime.date = None):
         """
         Создает электронной очереди новый документ для заполнения товарами.
 
+        :param dts: Дата в которой надо создать документ
+
         :return: Созданный документ
         """
-        doc = Document.objects.filter(create_date=datetime.date.today()).order_by('create_time').last()
+        if dts is None:
+            dts = datetime.date.today()
+        doc = Document.objects.filter(create_date=dts).order_by('create_time').last()
         if doc:
-            return Document.objects.create(number=doc.number + 1,
+            return Document.objects.create(create_date=dts, number=doc.number + 1,
                                            status_id=Status.get_initial_status())
         else:
-            return Document.objects.create(number=1,
+            return Document.objects.create(create_date=dts, number=1,
                                            status_id=Status.get_initial_status())
 
     class Meta:
