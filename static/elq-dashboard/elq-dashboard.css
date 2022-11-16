@@ -1,0 +1,28 @@
+body {
+	height: 100%;
+	overflow: hidden;
+	background-color: lightgray;
+	font-family: 'TT Backwards Script'
+}
+
+.row .col {
+	margin: 1px;
+	padding: 0;
+}
+
+.container {
+	margin-bottom: 1px;
+}
+
+.elq-finished {
+	background-color: #d9b9b6;
+}
+
+.elq-work {
+	background-color: gray;
+}
+
+img {
+	margin-bottom: 10px;
+	padding: 0;
+}
