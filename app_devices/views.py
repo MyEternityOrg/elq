@@ -16,7 +16,7 @@ class ImportReceiptData(BaseClassContextMixin, CreateView):
     title = 'Импорт данных кассовых чеков'
     template_name = 'app_devices/import_receipt_data.html'
     model = ImportedChecks
-    fields = ['__all__']
+    fields = ['cash_id']
 
     def post(self, request, *args, **kwargs):
         json_reply_error = ""
@@ -24,7 +24,7 @@ class ImportReceiptData(BaseClassContextMixin, CreateView):
             try:
                 json_input = json.loads(self.request.body)
                 if type(json_input) is dict:
-                    print(json_input['check_date'])
+                    print(json_input)
             except Exception as E:
                 json_reply_error = f'{E}'
         else:
