@@ -4,6 +4,7 @@ import uuid
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Max, Count
+from django.utils.timezone import now
 
 
 class Printer(models.Model):
@@ -97,7 +98,7 @@ class ImportedChecks(models.Model):
     """
     cash_id = models.IntegerField(default=1, null=False, verbose_name='Номер кассы', db_column='cash_id')
     check_id = models.IntegerField(default=1, null=False, verbose_name='Номер чека', db_column='check_id')
-    check_date = models.DateField(auto_now_add=True, verbose_name='Дата чека', db_column='check_dts', null=False)
+    check_date = models.DateField(default=now, verbose_name='Дата чека', db_column='check_dts', null=False)
     ware_code = models.CharField(null=False, max_length=16, verbose_name='Локальный код товара', unique=True,
                                  db_column='code')
     ware_count = models.IntegerField(default=1, verbose_name='Количество', db_column='cnt')

@@ -10,25 +10,26 @@ body {
     font-family: "TT Backwards Script", serif;
 }
 
-.row .col {
+.col {
     margin: 1px;
     padding: 0;
+    text-align: center;
 }
 
 .container {
-    margin-bottom: 1px;
+    border: 1px solid lightgray;
 }
 
 .elq-header {
     background-color: lightgray;
 }
 
-.elq-finished {
-    background-color: #d9b9b6;
-}
-
 .elq-work {
     background-color: gray;
+}
+
+.elq-finished {
+    background-color: #d9b9b6;
 }
 
 img {

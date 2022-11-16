@@ -1,7 +1,7 @@
 {% spaceless %}
-    <div class="row">
-        <div class="col display-1">
-            <div class="row elq-header">
+    <div class="row display-1">
+        <div class="col">
+            <div class="container elq-work">
                 <strong>Готовится</strong>
             </div>
             {% for object in object_list %}
@@ -12,8 +12,8 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="col display-1">
-            <div class="row elq-header">
+        <div class="col">
+            <div class="container elq-finished">
                 <strong>Готов</strong>
             </div>
             {% for object in object_list %}
