@@ -6,7 +6,7 @@
             </div>
             {% for object in object_list %}
                 {% if object.status_id.id == 1 %}
-                    <div class="container" style="background-color: gray">
+                    <div class="container elq-work">
                         {% include 'app_main/inc/doc_text.html' %}
                     </div>
                 {% endif %}
@@ -18,7 +18,7 @@
             </div>
             {% for object in object_list %}
                 {% if object.status_id.id == 2 %}
-                    <div class="container" style="background-color: #d9b9b6">
+                    <div class="container elq-finished">
                         {% include 'app_main/inc/doc_text.html' %}
                     </div>
                 {% endif %}
