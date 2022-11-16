@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 @method_decorator(csrf_exempt, name='dispatch')
 class ImportReceiptData(BaseClassContextMixin, CreateView):
     title = 'Импорт данных кассовых чеков'
-    template_name = 'app_devices/importreceiptdata.html'
+    template_name = 'app_devices/import_receipt_data.html'
     model = ImportedChecks
     fields = ['cash_id', 'check_id']
 
