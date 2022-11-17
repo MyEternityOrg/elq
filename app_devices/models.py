@@ -18,7 +18,7 @@ class Printer(models.Model):
         ip_address : Адрес устройства в сети.
 
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД устройства', editable=False)
     name = models.CharField(max_length=128, default='Нет названия', verbose_name='Наименование устройства')
     ip_address = models.GenericIPAddressField(default='127.0.0.1', null=False, verbose_name='IP адрес устройства')
@@ -53,7 +53,7 @@ class Cash(models.Model):
         request_interval: Интервал опроса кассы в миллисекундах
 
     """
-    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4(), max_length=64,
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
                             verbose_name='ИД устройства', editable=False)
     cash_number = models.IntegerField(default=1, unique=True, null=False, verbose_name='Номер кассы',
                                       db_column='cash_id')
@@ -81,6 +81,9 @@ class Cash(models.Model):
 class ImportedChecks(models.Model):
     """
         Данные импортируемых чеков.
+        Хранится последний номер чека, который был получен к указанной кассы в разрезе даты.
+
+        guid : Ключ записи.
 
         cash_id : Номер кассы.
 
@@ -88,28 +91,48 @@ class ImportedChecks(models.Model):
 
         check_date: Дата смены чека.
 
-        ware_code : Код товара
-
-        ware_count : Количество товара в чеке.
-
-        create_date_time : Дата/время импорта
-
-        processed : Признак обработки чека.
     """
-    cash_id = models.IntegerField(default=1, null=False, verbose_name='Номер кассы', db_column='cash_id')
+    guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
+                            verbose_name='ИД чека', editable=False)
+    cash_guid = models.ForeignKey(Cash, on_delete=models.CASCADE, verbose_name='Номер кассы', db_column='cash_guid')
     check_id = models.IntegerField(default=1, null=False, verbose_name='Номер чека', db_column='check_id')
     check_date = models.DateField(default=now, verbose_name='Дата чека', db_column='check_dts', null=False)
-    ware_code = models.CharField(null=False, max_length=16, verbose_name='Локальный код товара', unique=True,
-                                 db_column='code')
-    ware_count = models.IntegerField(default=1, verbose_name='Количество', db_column='cnt')
-    create_date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания', db_column='dts')
-    processed = models.BooleanField(default=False, null=False, verbose_name='Обработан', db_column='processed')
+
+    @staticmethod
+    def register_cash_check(i_cash_id: int, i_check_id: int, i_check_date: datetime = now):
+        """
+        Регистрирует данные кассового чека, для быстрого ответа - нужна ли запись чека в документ или нет.
+
+        :param i_cash_id: Идентификатор, номер кассы.
+        :param i_check_id:  Номер чека.
+        :param i_check_date: Дата чека.
+        :return: bool:register result, str:message, guid:cash_guid
+        """
+        cash_guid = Cash.objects.filter(cash_number=i_cash_id).first()
+        if cash_guid is None:
+            return False, f'Invalid cash number, registered numbers are:' \
+                          f' {[c.cash_number for c in Cash.objects.all()]}', None
+        imported_check = ImportedChecks.objects.filter(cash_guid=cash_guid,
+                                                       check_date=i_check_date).first()
+        if imported_check is not None:
+            if imported_check.check_id >= i_check_id:
+                return False, f'Already have receipt with number {imported_check.check_id}' \
+                              f' for cash {i_cash_id} ' \
+                              f'in {i_check_date}', None
+            else:
+                imported_check.check_id = i_check_id
+                imported_check.save()
+                return True, 'Ok', cash_guid
+        else:
+            ImportedChecks.objects.create(cash_guid=cash_guid, check_id=i_check_id,
+                                          check_date=i_check_date)
+            return True, 'Ok', cash_guid
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['cash_id', 'check_id', 'check_date'],
+            models.UniqueConstraint(fields=['cash_guid', 'check_id', 'check_date'],
                                     name="%(app_label)s_%(class)s_unique"),
         ]
         db_table = 'import_checks'
-        verbose_name = 'Чек'
-        verbose_name_plural = 'Чеки'
+        verbose_name = 'Чек ККТ'
+        verbose_name_plural = 'Чеки ККТ'

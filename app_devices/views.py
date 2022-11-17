@@ -7,6 +7,7 @@ from django.views.generic import CreateView, UpdateView, DetailView, DeleteView,
 from elq.mixin import BaseClassContextMixin
 from app_devices.models import ImportedChecks
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.timezone import now
 from django.utils.decorators import method_decorator
 from elq.settings import API_KEY
 
@@ -24,7 +25,13 @@ class ImportReceiptData(BaseClassContextMixin, CreateView):
             try:
                 json_input = json.loads(self.request.body)
                 if type(json_input) is dict:
-                    print(json_input)
+                    result, msg, cash_guid = ImportedChecks.register_cash_check(json_input.get('cash_id', 0),
+                                                                     json_input.get('check_id', 0),
+                                                                     json_input.get('check_date', now))
+                    if result:
+                        print(json_input)
+                    else:
+                        print(msg)
             except Exception as E:
                 json_reply_error = f'{E}'
         else:
