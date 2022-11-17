@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, ListView, TemplateView
 from elq.mixin import BaseClassContextMixin
-from app_devices.models import ImportedChecks
+from app_devices.models import ImportedChecks, Printer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
@@ -21,22 +21,26 @@ class ImportReceiptData(BaseClassContextMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         json_reply_error = ""
+        json_reply_number = -1
         if self.request.headers.get('key', None) == API_KEY:
             try:
                 json_input = json.loads(self.request.body)
                 if type(json_input) is dict:
-                    result, msg, cash_guid = ImportedChecks.register_cash_check(json_input.get('cash_id', 0),
-                                                                     json_input.get('check_id', 0),
-                                                                     json_input.get('check_date', now))
+                    result, msg, json_reply_number, printer = ImportedChecks.register_cash_check(
+                        json_input.get('cash_id', 0),
+                        json_input.get('check_id', 0),
+                        json_input.get('check_date',
+                                       now),
+                        json_input.get('wares', []))
                     if result:
-                        print(json_input)
+                        Printer.print_document(printer, json_reply_number, json_input.get('check_date', now))
                     else:
-                        print(msg)
+                        json_reply_error = msg
             except Exception as E:
                 json_reply_error = f'{E}'
         else:
             json_reply_error = 'Invalid api key.'
-        return JsonResponse({"error": json_reply_error})
+        return JsonResponse({"doc_number": json_reply_number, "error": json_reply_error})
 
     def get_context_data(self, **kwargs):
         context = super(ImportReceiptData, self).get_context_data(**kwargs)

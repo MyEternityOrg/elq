@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Max, Count
 from django.utils.timezone import now
+from app_main.models import Ware, DocumentWare, Document, Status
 
 
 class Printer(models.Model):
@@ -25,6 +26,11 @@ class Printer(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.ip_address})'
+
+    @staticmethod
+    def print_document(printer, document_number: int, dts: datetime.date = now):
+        if printer is not None:
+            print(f'Need to print document {document_number} in {dts} on {printer.ip_address}')
 
     class Meta:
         db_table = 'printer'
@@ -99,34 +105,86 @@ class ImportedChecks(models.Model):
     check_date = models.DateField(default=now, verbose_name='Дата чека', db_column='check_dts', null=False)
 
     @staticmethod
-    def register_cash_check(i_cash_id: int, i_check_id: int, i_check_date: datetime = now):
+    def check_ware(ware_code: str = None, ware_count: int = None):
+        ware = Ware.objects.filter(code=ware_code, catch_quantity__lte=ware_count).first()
+        if ware:
+            return ware.guid, ware_count
+        else:
+            return None, None
+
+    @staticmethod
+    def process_check_data(json_array=None, dts: datetime.date = now):
+        wares_list = []
+        try:
+            if type(json_array) is list:
+                for k in json_array:
+                    if type(k) is dict:
+                        ware_guid, ware_cnt = ImportedChecks.check_ware(**k)
+                        if ware_guid is not None:
+                            wares_list.append([ware_guid, ware_cnt])
+                    else:
+                        return False, 'Invalid json structure', -1
+                if len(wares_list) > 0:
+                    document = Document.create_document(dts)
+                    if document is not None:
+                        for k in wares_list:
+                            DocumentWare.add_ware(document.guid, k[0], k[1])
+                        return True, '', document.number
+                    else:
+                        return False, 'Error registering document', -1
+                else:
+                    return False, 'Nothing to register', 0
+            else:
+                return False, 'Invalid json structure', -1
+        except Exception as E:
+            return False, f'{E}', -1
+
+    @staticmethod
+    def register_cash_check(i_cash_id: int, i_check_id: int, i_check_date: datetime.date = now, json_array=None):
         """
         Регистрирует данные кассового чека, для быстрого ответа - нужна ли запись чека в документ или нет.
 
         :param i_cash_id: Идентификатор, номер кассы.
         :param i_check_id:  Номер чека.
         :param i_check_date: Дата чека.
-        :return: bool:register result, str:message, guid:cash_guid
+        :param json_array: Массив данных чека.
+        :return: bool:register result, str:message
         """
+        if json_array is None:
+            json_array = []
+        doc_number = -1
+        doc_msg = ''
+        doc_state = False
+        doc_printer = None
+
         cash_guid = Cash.objects.filter(cash_number=i_cash_id).first()
         if cash_guid is None:
             return False, f'Invalid cash number, registered numbers are:' \
-                          f' {[c.cash_number for c in Cash.objects.all()]}', None
+                          f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, None
+        doc_printer = cash_guid.printer_guid
         imported_check = ImportedChecks.objects.filter(cash_guid=cash_guid,
                                                        check_date=i_check_date).first()
         if imported_check is not None:
             if imported_check.check_id >= i_check_id:
                 return False, f'Already have receipt with number {imported_check.check_id}' \
                               f' for cash {i_cash_id} ' \
-                              f'in {i_check_date}', None
+                              f'in {i_check_date}', doc_number, doc_printer
             else:
-                imported_check.check_id = i_check_id
-                imported_check.save()
-                return True, 'Ok', cash_guid
+                doc_state, doc_msg, doc_number = ImportedChecks.process_check_data(json_array, i_check_date)
+                if doc_state:
+                    imported_check.check_id = i_check_id
+                    imported_check.save()
+                    return True, '', doc_number, doc_printer
+                else:
+                    return doc_state, doc_msg, doc_number, doc_printer
         else:
-            ImportedChecks.objects.create(cash_guid=cash_guid, check_id=i_check_id,
-                                          check_date=i_check_date)
-            return True, 'Ok', cash_guid
+            doc_state, doc_msg, doc_number = ImportedChecks.process_check_data(json_array, i_check_date)
+            if doc_state:
+                ImportedChecks.objects.create(cash_guid=cash_guid, check_id=i_check_id,
+                                              check_date=i_check_date)
+                return True, '', doc_number, doc_printer
+            else:
+                return doc_state, doc_msg, doc_number, doc_printer
 
     class Meta:
         constraints = [
