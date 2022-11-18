@@ -1,0 +1,50 @@
+{% load static %}
+{% load users_tags %}
+{% block content %}
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <div class="text">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:index' %}"><i class="bi bi-house-heart"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:dashboard' %}"><i class="bi bi-receipt"></i> Электронная
+                            очередь</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-journals"></i> Документы
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#"><i
+                                    class="bi bi-journal-text"></i> УПД</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if user.is_active %}
+                    <a class="nav-link"><i class="bi bi-person"></i> {% user_login_name user %}<span
+                            class="sr-only">(current)</span></a>
+                    {% if user.is_superuser %}
+                        <a class="nav-link" href="{% url 'admin:index' %}"><i class="bi bi-server"></i>
+                            Администрирование<span
+                                    class="sr-only">(current)</span></a>
+                    {% endif %}
+                    <a class="nav-link" href="{% url 'users:logout' %}"><i class="bi bi-door-closed"></i> Выйти<span
+                            class="sr-only">(current)</span></a>
+
+                {% else %}
+                    <a class="nav-link" href="{% url 'users:login' %}"><i class="bi bi-door-open"></i> Войти<span
+                            class="sr-only">(current)</span></a>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
