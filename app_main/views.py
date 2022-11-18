@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.views.generic import ListView, TemplateView
 
 from app_main.models import Document, Status
-from elq.mixin import BaseClassContextMixin
+from elq.mixin import BaseClassContextMixin, UserLoginCheckMixin
 
 
 class IndexPageView(BaseClassContextMixin, TemplateView):
@@ -38,3 +38,11 @@ class PanelPageView(BaseClassContextMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(PanelPageView, self).get_context_data(**kwargs)
         return context
+
+
+class DocumentListView(BaseClassContextMixin, UserLoginCheckMixin, ListView):
+    template_name = 'app_main/documents.html'
+    model = Document
+    title = 'Список заказов'
+
+

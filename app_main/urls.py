@@ -10,4 +10,5 @@ app_name = 'main'
 urlpatterns = [
     path('', IndexPageView.as_view(), name='index'),
     path('dashboard/', PanelPageView.as_view(), name='dashboard'),
+    path('documents/', DocumentListView.as_view(), name='documnets'),
 ]
