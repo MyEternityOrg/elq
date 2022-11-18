@@ -45,4 +45,6 @@ class DocumentListView(BaseClassContextMixin, UserLoginCheckMixin, ListView):
     model = Document
     title = 'Список заказов'
 
-
+    def get_queryset(self):
+        return Document.objects.filter(status_id__in=Status.get_dashboard_statuses(),
+                                       create_date=datetime.date.today()).order_by('create_time')

@@ -1,0 +1,25 @@
+.row {
+    font-min-size: 48pt;
+    font-size: 52pt;
+    text-align: center;
+    padding: 0;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.doc-styled {
+    margin: 5px;
+    padding: 0;
+    background-color: burlywood;
+}
+
+.row-hdr {
+    background-color: lightgray;
+}
+
+.col-narrow {
+    max-width: 20%;
+    margin-left: 1px;
+    margin-right: 1px;
+
+}
