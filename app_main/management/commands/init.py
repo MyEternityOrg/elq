@@ -36,8 +36,8 @@ class Command(BaseCommand):
         Status.objects.all().delete()
         Status.objects.create(id=1, name='Готовится', show=True, finished=False, color='gray', icon='bi bi-bag')
         Status.objects.create(id=2, name='Готов к выдаче', show=True, finished=False, color='#d9b9b6',
-                              icon='bi bi-bag-check')
-        Status.objects.create(id=3, name='Выдан', show=False, finished=True, color='#0c4128', icon='bi bi-bag-plus')
+                              icon='bi bi-bag-plus')
+        Status.objects.create(id=3, name='Выдан', show=False, finished=True, color='#0c4128', icon='bi bi-bag-check')
         Status.objects.create(id=4, name='Отменен', show=False, finished=True, color='maroon', icon='bi bi-bag-x')
 
         print('Creating status flow rules...')

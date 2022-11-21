@@ -1,19 +1,21 @@
 {% load app_main_tags %}
-<div class="row div-centered-text" id="{{ object.guid }}" style="background-color: {% line_color object.status_id %}">
-    <div class="col col-narrow">{{ object.number }}</div>
-    {% line_element object.status_id as flows %}
-    <div class="col col-narrow">
-        <div class="row">
-            {% for flow in flows %}
-                <div class="col">
-                    <button class="btn btn-action" type="button" style="color: {{ flow.next_status_id.color }}">
-                        <div class="{{ flow.next_status_id.icon }}" style="line-height: 1px"></div>
-                    </button>
-                    <p style="font-size: 18pt">{{ flow.next_status_id.name }}</p>
-                </div>
-            {% endfor %}
-        </div>
+<div class="col col-narrow">{{ object.number }}</div>
+{% line_element object.status_id as flows %}
+<div class="col col-narrow">
+    <div class="row">
+        {% for flow in flows %}
+            <div class="col">
+                <button class="btn btn-action" type="button" style="color: {{ flow.next_status_id.color }}"
+                        onclick="set_next_status('{% url 'main:documents' %}',
+                                '{{ object.guid }}',
+                                {{ flow.next_status_id.id }})">
+                    <div class="{{ flow.next_status_id.icon }}" style="line-height: 1px"></div>
+                </button>
+                <p style="font-size: 12pt">{{ flow.next_status_id.name }}</p>
+            </div>
+        {% endfor %}
     </div>
-    <div class="col">{{ object.status_id }}</div>
-    <div class="col col-narrow">{{ object.create_time }}</div>
 </div>
+<div class="col">{{ object.status_id }}</div>
+<div class="col col-narrow">{{ object.create_time }}</div>
+

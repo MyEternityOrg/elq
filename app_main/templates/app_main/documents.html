@@ -13,9 +13,37 @@
             <div class="col col-narrow">Создан</div>
         </div>
         {% for object in object_list %}
-            {% include 'app_main/inc/document_row.html' %}
+            <div class="row div-centered-text" id="{{ object.guid }}" style="background-color: {% line_color object.status_id %}">
+                {% include 'app_main/inc/document_row.html' %}
+            </div>
         {% endfor %}
     </div>
 {% endblock %}
 {% block script %}
+    <script>
+        function set_next_status(_url, object, next_status) {
+            $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: _url,
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "object": object,
+                        "next_status": next_status
+                    },
+                    success:
+                        function callback(response) {
+                            if (response.result === 1)
+                            {
+                                elm = document.getElementById(response.object)
+                                elm.innerHTML = response.data
+                                elm.style.backgroundColor = response.background_color
+                            }
+                            else if (response.result === 2) document.getElementById(response.object).remove()
+                        }
+                }
+            )
+            ;
+        }
+    </script>
 {% endblock %}
