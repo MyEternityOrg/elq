@@ -1,23 +1,60 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load app_main_tags %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'elq-document/elq-document.css' %}">
 {% endblock %}
 {% block content %}
-    <div class="container-fluid doc-styled">
-        <div class="row row-hdr">
-            <div class="col col-narrow">Заказ</div>
-            <div class="col">Статус заказа</div>
-            <div class="col col-narrow">Создан</div>
-        </div>
-        {% for object in object_list %}
-            <div class="row" id="{{ object.guid }}">
-                <div class="col col-narrow">{{ object.number }}</div>
-                <div class="col">{{ object.status_id }}</div>
-                <div class="col col-narrow">{{ object.create_time }}</div>
-            </div>
-        {% endfor %}
+    <div class="container-fluid doc-styled" id="eld">
+        {% include 'app_main/inc/document_list.html' %}
     </div>
 {% endblock %}
 {% block script %}
+    <script>
+        function update_list(_url) {
+            $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: _url,
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "full_update": 1
+                    },
+                    success:
+                        function callback(response) {
+                            if (response.result === 1) {
+                                document.getElementById(response.object).innerHTML = response.data
+                            }
+                        }
+                }
+            )
+            ;
+        }
+
+        function set_next_status(_url, object, next_status) {
+            $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: _url,
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "object": object,
+                        "full_update": 0,
+                        "next_status": next_status
+                    },
+                    success:
+                        function callback(response) {
+                            if (response.result === 1) {
+                                elm = document.getElementById(response.object)
+                                elm.innerHTML = response.data
+                                elm.style.backgroundColor = response.background_color
+                            } else if (response.result === 2) document.getElementById(response.object).remove()
+                        }
+                }
+            )
+            ;
+        }
+
+        let timerId = setInterval(() => update_list("{% url 'main:documents' %}"), 5000);
+    </script>
 {% endblock %}

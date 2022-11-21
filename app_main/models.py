@@ -96,6 +96,8 @@ class Status(models.Model):
     show = models.BooleanField(default=True, verbose_name='Отображение статуса', db_column='show')
     create_date_time = models.DateTimeField(auto_now_add=True, editable=False,
                                             verbose_name='Дата записи', db_column='dts')
+    color = models.CharField(default='gray', max_length=32, verbose_name='Цвет элемента')
+    icon = models.CharField(default='bi bi-bag', max_length=64, verbose_name='Иконка элемента')
 
     @staticmethod
     def get_initial_status():

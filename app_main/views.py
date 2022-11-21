@@ -45,6 +45,33 @@ class DocumentListView(BaseClassContextMixin, UserLoginCheckMixin, ListView):
     model = Document
     title = 'Список заказов'
 
+    def __init__(self, **kwargs):
+        super(DocumentListView, self).__init__(**kwargs)
+        self.object = None
+        self.is_ajax = False
+
     def get_queryset(self):
         return Document.objects.filter(status_id__in=Status.get_dashboard_statuses(),
                                        create_date=datetime.date.today()).order_by('create_time')
+
+    def post(self, request, *args, **kwargs):
+        self.is_ajax = True if request.headers.get('X-Requested-With') == 'XMLHttpRequest' else False
+        if self.is_ajax:
+            full_update = True if request.POST.get('full_update', 0) == '1' else False
+            if not full_update:
+                self.object = Document.objects.filter(guid=request.POST.get('object', None)).first()
+                status = Status.objects.filter(id=request.POST.get('next_status', -1)).first()
+                self.object.status_id = status
+                self.object.save()
+                if status.finished == 1:
+                    return JsonResponse({'result': 2, 'object': self.object.guid, 'data': ''})
+                else:
+                    return JsonResponse(
+                        {'result': 1, 'object': self.object.guid,
+                         "background_color": self.object.status_id.color,
+                         'data': render_to_string('app_main/inc/document_row.html', {'object': self.object})}
+                    )
+            else:
+                return JsonResponse(
+                    {'result': 1, 'object': 'eld', 'data': render_to_string('app_main/inc/document_list.html', {
+                        'object_list': self.get_queryset()})})
