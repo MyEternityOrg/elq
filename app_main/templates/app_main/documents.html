@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load app_main_tags %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'elq-document/elq-document.css' %}">
 {% endblock %}
@@ -7,15 +8,12 @@
     <div class="container-fluid doc-styled">
         <div class="row row-hdr">
             <div class="col col-narrow">Заказ</div>
+            <div class="col col-narrow">Операции</div>
             <div class="col">Статус заказа</div>
             <div class="col col-narrow">Создан</div>
         </div>
         {% for object in object_list %}
-            <div class="row" id="{{ object.guid }}">
-                <div class="col col-narrow">{{ object.number }}</div>
-                <div class="col">{{ object.status_id }}</div>
-                <div class="col col-narrow">{{ object.create_time }}</div>
-            </div>
+            {% include 'app_main/inc/document_row.html' %}
         {% endfor %}
     </div>
 {% endblock %}

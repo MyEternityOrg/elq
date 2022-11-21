@@ -1,25 +1,25 @@
 .row {
-    font-min-size: 48pt;
-    font-size: 52pt;
+    font-min-size: 32pt;
+    font-size: 48pt;
     text-align: center;
+    vertical-align: middle;
     padding: 0;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin: 3px;
 }
 
 .doc-styled {
-    margin: 5px;
     padding: 0;
-    background-color: burlywood;
 }
 
 .row-hdr {
     background-color: lightgray;
+    margin-bottom: 3px;
 }
 
 .col-narrow {
+    min-width: 15%;
     max-width: 20%;
-    margin-left: 1px;
-    margin-right: 1px;
+    margin-left: 3px;
+    margin-right: 3px;
 
 }

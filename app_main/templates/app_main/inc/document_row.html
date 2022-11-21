@@ -1,0 +1,16 @@
+{% load app_main_tags %}
+<div class="row" id="{{ object.guid }}" style="background-color: {% line_color object.status_id %}">
+    <div class="col col-narrow">{{ object.number }}</div>
+    {% line_element object.status_id as flows %}
+    <div class="col col-narrow">
+        <div class="row">
+            {% for flow in flows %}
+                <div class="col button"><i class="{{ flow.next_status_id.icon }}" style="color: {{ flow.next_status_id.color }}"></i>
+                <p style="font-size: 18pt">{{ flow.next_status_id.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col">{{ object.status_id }}</div>
+    <div class="col col-narrow">{{ object.create_time }}</div>
+</div>
