@@ -1,0 +1,13 @@
+{% load app_main_tags %}
+<div class="row row-hdr">
+    <div class="col col-narrow">Заказ</div>
+    <div class="col col-narrow">Операции</div>
+    <div class="col">Статус заказа</div>
+    <div class="col col-narrow">Создан</div>
+</div>
+{% for object in object_list %}
+    <div class="row div-centered-text" id="{{ object.guid }}"
+         style="background-color: {% line_color object.status_id %}">
+        {% include 'app_main/inc/document_row.html' %}
+    </div>
+{% endfor %}
