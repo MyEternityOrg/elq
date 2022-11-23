@@ -69,9 +69,9 @@ class Cash(models.Model):
                                               db_column='ip')
     printer_guid = models.ForeignKey(Printer, null=True, on_delete=models.CASCADE, verbose_name='Принтер',
                                      db_column='printer_guid')
-    pg_login = models.CharField(max_length=64, verbose_name='Логин SQL', db_column='sql_login')
-    pg_password = models.CharField(max_length=64, verbose_name='Пароль SQL', db_column='sql_passw')
-    pg_db_name = models.CharField(max_length=64, verbose_name='Наименование БД', db_column='sql_db')
+    pg_login = models.CharField(default='postgres', max_length=64, verbose_name='Логин SQL', db_column='sql_login')
+    pg_password = models.CharField(default='postgres', max_length=64, verbose_name='Пароль SQL', db_column='sql_passw')
+    pg_db_name = models.CharField(default='cash', max_length=64, verbose_name='Наименование БД', db_column='sql_db')
     request_interval = models.IntegerField(default=2000, verbose_name='Интервал опроса кассы, м/сек',
                                            db_column='request_interval')
 
