@@ -8,4 +8,4 @@ venv\Scripts\pip install -r requirements.txt
 venv\scripts\python.exe manage.py migrate
 venv\scripts\python.exe manage.py init
 IF NOT EXIST .env copy .env.sample .env
-venv\Scripts\python manage.py runserver 192.168.109.4:8091
+venv\Scripts\python manage.py runserver 127.0.0.1:8091
