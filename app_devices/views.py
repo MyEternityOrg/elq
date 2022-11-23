@@ -13,11 +13,10 @@ from elq.settings import API_KEY
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class ImportReceiptData(BaseClassContextMixin, CreateView):
+class ImportReceiptData(BaseClassContextMixin, TemplateView):
     title = 'Импорт данных кассовых чеков'
     template_name = 'app_devices/import_receipt_data.html'
     model = ImportedChecks
-    fields = ['cash_id']
 
     def post(self, request, *args, **kwargs):
         json_reply_error = ""

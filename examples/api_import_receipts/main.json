@@ -1,0 +1,25 @@
+{
+	"api": "http://192.168.109.4:8089/devices/import_receipt/",
+	"api_key": "secret_key_here",
+	"timer": 3,
+	"cashes": [
+		{
+			"sql_server": "10.1.16.11"
+		},
+		{
+			"sql_server": "10.1.16.12"
+		},
+		{
+			"sql_server": "10.1.16.13"
+		},
+		{
+			"sql_server": "10.1.16.14"
+		},
+		{
+			"sql_server": "10.1.16.15"
+		},
+		{
+			"sql_server": "10.1.16.16"
+		}
+	]
+}
