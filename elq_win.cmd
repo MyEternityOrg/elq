@@ -5,7 +5,7 @@ git pull
 python -m venv venv
 venv\scripts\python.exe -m pip install --upgrade pip
 venv\Scripts\pip install -r requirements.txt
+IF NOT EXIST .env copy .env.sample .env
 venv\scripts\python.exe manage.py migrate
 venv\scripts\python.exe manage.py init
-IF NOT EXIST .env copy .env.sample .env
 venv\Scripts\python manage.py runserver 127.0.0.1:8091
