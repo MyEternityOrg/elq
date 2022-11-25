@@ -1,5 +1,6 @@
 select
 	cs.cashnum as cash_id,
+	cs.numshift as shift_id,
 	cp.numberfield as check_id,
 	to_char(cs.shiftopen,'YYYY-MM-DD') as check_date,
 	ch.item as ware,
@@ -15,6 +16,7 @@ where
 	and cp.cashoperation = 0
 group by 
 	cs.cashnum,
+	cs.numshift,
 	cs.shiftopen,
 	cp.numberfield,
 	ch.item

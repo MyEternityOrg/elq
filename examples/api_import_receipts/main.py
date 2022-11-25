@@ -29,8 +29,8 @@ def prepared_request(cash=None):
     result_data = {}
     for res in read_data(**cash):
         if result_data.get(res[1], None) is None:
-            result_data[res[1]] = {'cash_id': res[0], 'check_id': res[1], 'check_date': res[2], 'wares': []}
-        result_data[res[1]]['wares'].append({'ware_code': res[3], 'ware_count': res[4]})
+            result_data[res[1]] = {'cash_id': res[0], 'shift_id': res[1], 'check_id': res[2], 'check_date': res[3], 'wares': []}
+        result_data[res[1]]['wares'].append({'ware_code': res[4], 'ware_count': res[5]})
 
     for el in result_data.values():
         yield json.dumps(el)

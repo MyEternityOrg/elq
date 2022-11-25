@@ -27,6 +27,7 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
                 if type(json_input) is dict:
                     result, msg, json_reply_number, printer = ImportedChecks.register_cash_check(
                         json_input.get('cash_id', 0),
+                        json_input.get('shift_id', 1),
                         json_input.get('check_id', 0),
                         json_input.get('check_date',
                                        now),

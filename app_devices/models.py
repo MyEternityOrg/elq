@@ -102,6 +102,7 @@ class ImportedChecks(models.Model):
                             verbose_name='ИД чека', editable=False)
     cash_guid = models.ForeignKey(Cash, on_delete=models.CASCADE, verbose_name='Номер кассы', db_column='cash_guid')
     check_id = models.IntegerField(default=1, null=False, verbose_name='Номер чека', db_column='check_id')
+    shift_id = models.IntegerField(default=1, null=False, verbose_name='Номер смены', db_column='shift_id')
     check_date = models.DateField(default=now, verbose_name='Дата чека', db_column='check_dts', null=False)
 
     @staticmethod
@@ -140,7 +141,7 @@ class ImportedChecks(models.Model):
             return False, f'{E}', -1
 
     @staticmethod
-    def register_cash_check(i_cash_id: int, i_check_id: int, i_check_date: datetime.date = now, json_array=None):
+    def register_cash_check(i_cash_id: int, i_shift_id: int, i_check_id: int, i_check_date: datetime.date = now, json_array=None):
         """
         Регистрирует данные кассового чека, для быстрого ответа - нужна ли запись чека в документ или нет.
 
@@ -163,7 +164,7 @@ class ImportedChecks(models.Model):
                           f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, None
         doc_printer = cash_guid.printer_guid
         imported_check = ImportedChecks.objects.filter(cash_guid=cash_guid,
-                                                       check_date=i_check_date).first()
+                                                       check_date=i_check_date, shift_id=i_shift_id).first()
         if imported_check is not None:
             if imported_check.check_id >= i_check_id:
                 return False, f'Already have receipt with number {imported_check.check_id}' \
@@ -180,7 +181,7 @@ class ImportedChecks(models.Model):
         else:
             doc_state, doc_msg, doc_number = ImportedChecks.process_check_data(json_array, i_check_date)
             if doc_state:
-                ImportedChecks.objects.create(cash_guid=cash_guid, check_id=i_check_id,
+                ImportedChecks.objects.create(cash_guid=cash_guid, check_id=i_check_id, shift_id=i_shift_id,
                                               check_date=i_check_date)
                 return True, '', doc_number, doc_printer
             else:
@@ -188,7 +189,7 @@ class ImportedChecks(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['cash_guid', 'check_id', 'check_date'],
+            models.UniqueConstraint(fields=['cash_guid', 'check_id', 'shift_id', 'check_date'],
                                     name="%(app_label)s_%(class)s_unique"),
         ]
         db_table = 'import_checks'
