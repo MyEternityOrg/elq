@@ -30,7 +30,7 @@ class Printer(models.Model):
     @staticmethod
     def print_document(printer, document_number: int, dts: datetime.date = now):
         if printer is not None:
-            print_receipt(printer.name, str(document_number), 1, dts.strftime('%Y-%m-%d %H:%M'))
+            print_receipt(printer.name, str(document_number), 1, datetime.datetime.strftime('%Y-%m-%d %H:%M'))
 
     class Meta:
         db_table = 'printer'
