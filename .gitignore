@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.pkl
 # C extensions
 *.so
 
@@ -136,3 +136,4 @@ dmypy.json
 /.github/
 /media/
 /media/django-summernote/
+/examples/print/arial.pkl

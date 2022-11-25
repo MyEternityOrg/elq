@@ -25,7 +25,7 @@ def create_pdf():
     pdf = FPDF(format=page_size)
     pdf.set_margins(1, 1, 1)
     pdf.auto_page_break = False
-    pdf.add_font('Arial', '', 'arial.ttf', uni=True)
+    pdf.add_font('Arial', '', 'app_devices/printer/arial.ttf', uni=True)
     pdf.add_page(orientation='P')
     return pdf
 

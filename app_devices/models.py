@@ -1,9 +1,9 @@
 import datetime
 import uuid
 
+from app_devices.printer.printer import print_receipt
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Max, Count
 from django.utils.timezone import now
 from app_main.models import Ware, DocumentWare, Document, Status
 
@@ -30,6 +30,7 @@ class Printer(models.Model):
     @staticmethod
     def print_document(printer, document_number: int, dts: datetime.date = now):
         if printer is not None:
+            print_receipt(printer.name, str(document_number), 1)
             print(f'Need to print document {document_number} in {dts} on {printer.ip_address}')
 
     class Meta:
