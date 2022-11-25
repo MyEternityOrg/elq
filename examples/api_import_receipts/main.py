@@ -20,7 +20,6 @@ def read_data(sql: str = '', sql_server: str = '127.0.0.1', sql_database: str = 
         with conn.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(sql)
             for row in cursor:
-                print(row)
                 yield row
 
 
@@ -34,7 +33,6 @@ def prepared_request(cash=None):
         result_data[f'{res[0]}-{res[1]}-{res[2]}']['wares'].append({'ware_code': res[4], 'ware_count': res[5]})
 
     for el in result_data.values():
-        print(el)
         yield json.dumps(el)
 
 
