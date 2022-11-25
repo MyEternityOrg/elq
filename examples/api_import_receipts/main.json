@@ -1,5 +1,5 @@
 {
-	"api": "http://172.16.103.49:8090/devices/import_receipt/",
+	"api": "http://192.168.109.4:8089//devices/import_receipt/",
 	"api_key": "secret_key_here",
 	"timer": 3,
 	"cashes": [
