@@ -37,12 +37,13 @@ def write_pdf(pdf, offset_y: int = 0, text: str = '', size: int = 8):
     return pdf
 
 
-def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1):
+def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1,
+                  dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')):
     if platform.system() == 'Linux':
         data = create_pdf()
         write_pdf(data, 3, 'Электронная очередь', 8)
         write_pdf(data, 18, f'#{receipt_id}', 24)
-        write_pdf(data, 33, f"{datetime.datetime.today().strftime('%Y-%m-%d %H:%M')}", 8)
+        write_pdf(data, 33, f"{dts}", 8)
         write_pdf(data, 39, '-----------', 8)
         data.output("receipt.pdf")
         conn = cups.Connection()
@@ -61,7 +62,7 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
                     printer.width = 2048
                     printer.text("Электронная очередь", align="center", font_config={"height": 12})
                     printer.text(f'#{receipt_id}', align="center", font_config={"height": 18})
-                    printer.text(f"{datetime.datetime.today().strftime('%Y-%m-%d %H:%M')}", align="center",
+                    printer.text(f"{dts}", align="center",
                                  font_config={"height": 12})
                     printer.text('-----------')
                     printer.new_page()
