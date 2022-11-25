@@ -36,6 +36,7 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
                     else:
                         json_reply_error = msg
             except Exception as E:
+                print(E)
                 json_reply_error = f'{E}'
         else:
             json_reply_error = 'Invalid api key.'
