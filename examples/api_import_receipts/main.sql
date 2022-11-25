@@ -12,7 +12,7 @@ from ch_shift cs
 left join ch_purchase cp on cp.id_shift = cs.id 
 left join ch_position ch on cp.id = ch.id_purchase 
 where 
-	cp.datecommit >= current_timestamp - interval '5 minute'
+	cp.datecommit >= current_timestamp - interval '15 minute'
 	and cp.cashoperation = 0
 group by 
 	cs.cashnum,
