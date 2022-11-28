@@ -75,6 +75,8 @@ git pull
 venv/bin/python3 -m pip install --upgrade pip
 venv/bin/pip install -r requirements.txt
 venv/bin/python3 manage.py migrate
+venv/bin/python3 manage.py init
+venv/bin/python3 manage.py runserver
 ```
 
 ### Установка для Windows.
@@ -97,4 +99,51 @@ IF NOT EXIST .env copy .env.sample .env
 venv\scripts\python.exe manage.py migrate
 venv\scripts\python.exe manage.py init
 venv\Scripts\python manage.py runserver
+```
+
+# Дополнительная настройка проекта
+
+## api_key
+
+Для ограничения доступа к post интерфейсу получения кассовых чеков можно задать свой собственный api_key, в файле .env
+
+```
+API_KEY = 'secret_key_here'
+```
+
+## api_import_receipts
+
+В папке examples проекта - приложение сборщик данных по продажам из касс Set Reatail 10 (Crystal)
+
+* api - Адрес интерфейса.
+* api_key - Ключ доступа.
+* timer - Интервал опроса касс из списка (cashes) в секундах.
+* cashes - массив кассовых терминалов.
+
+settings.json
+
+```
+{
+	"api": "http://127.0.0.1:8000//devices/import_receipt/",
+	"api_key": "secret_key_here",
+	"timer": 3,
+	"cashes": [
+		{
+			"sql_server": "127.0.0.1"
+		}
+	]
+}
+
+```
+
+### Запуск приложения (Windows):
+
+```
+venv\scripts\python.exe examples\api_import_receipts\main.py
+```
+
+### Запуск приложения (Ubuntu):
+
+```
+venv/bin/python3 examples/api_import_receipts/main.py 
 ```
