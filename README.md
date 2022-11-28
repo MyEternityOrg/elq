@@ -54,29 +54,9 @@ venv/bin/python3 manage.py init
 venv/bin/python3 manage.py runserver
 ```
 
-#### Суперпользователь
+## Установка для Windows.
 
-```
-init: Создает суперпользователя shop с паролем 123
-```
-
-### После этого в браузере можно ввести ip-адрес сервера и откроется проект.
-
-#### Обновление проекта из Git:
-
-```
-cd /opt/elq
-git pull
-venv/bin/python3 -m pip install --upgrade pip
-venv/bin/pip install -r requirements.txt
-venv/bin/python3 manage.py migrate
-venv/bin/python3 manage.py init
-venv/bin/python3 manage.py runserver
-```
-
-### Установка для Windows.
-
-#### В качестве примера можно взять elq_win.cmd из корневой директории проекта.
+В качестве примера можно взять elq_win.cmd из корневой директории проекта.
 
 Установка вручную:
 
@@ -98,7 +78,7 @@ venv\Scripts\python manage.py runserver
 
 # Дополнительная настройка проекта
 
-## api_key
+### api_key
 
 Для ограничения доступа к post интерфейсу получения кассовых чеков можно задать свой собственный api_key, в файле .env
 
@@ -106,7 +86,13 @@ venv\Scripts\python manage.py runserver
 API_KEY = 'secret_key_here'
 ```
 
-## api_import_receipts
+#### Суперпользователь
+
+```
+init: Создает суперпользователя shop с паролем 123
+```
+
+### api_import_receipts
 
 В папке examples проекта - приложение сборщик данных по продажам из касс Set Reatail 10 (Crystal)
 
@@ -131,7 +117,7 @@ settings.json
 
 ```
 
-### Запуск приложения (Windows):
+#### Запуск приложения (Windows):
 
 ```
 cd examples
@@ -139,10 +125,32 @@ cd api_import_receipts
 ..\..\venv\scripts\python.exe main.py
 ```
 
-### Запуск приложения (Ubuntu):
+#### Обновление проекта из Git (Windows):
+
+```
+cd /opt/elq
+git pull
+venv/bin/python3 -m pip install --upgrade pip
+venv/bin/pip install -r requirements.txt
+venv/bin/python3 manage.py migrate
+venv/bin/python3 manage.py runserver
+```
+
+#### Запуск приложения (Ubuntu):
 
 ```
 cd examples
 cd api_import_receipts
 ../../venv/bin/python3 examples/api_import_receipts/main.py 
+```
+
+#### Обновление проекта из Git (Ubuntu):
+
+```
+cd /opt/elq
+git pull
+venv\scripts\python.exe -m pip install --upgrade pip
+venv\scripts\pip install -r requirements.txt
+venv\scripts\python.exe manage.py migrate
+venv\scripts\python.exe manage.py runserver
 ```
