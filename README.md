@@ -76,7 +76,7 @@ venv\scripts\python.exe manage.py init
 venv\Scripts\python manage.py runserver
 ```
 
-# Дополнительная настройка проекта
+# Дополнительная информация
 
 ### api_key
 
