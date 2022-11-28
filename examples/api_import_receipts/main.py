@@ -3,6 +3,8 @@ import json
 import os
 import time
 from contextlib import closing
+from dotenv import dotenv_values
+from dotenv import load_dotenv
 
 import psycopg2
 import requests
@@ -57,8 +59,10 @@ def proceed_data(system_settings=None):
 
 
 if __name__ == "__main__":
-    with open('main.json', encoding='UTF8') as f:
-        settings = json.loads(f.read())
+    load_dotenv('../../.env')
+    settings = json.loads(os.getenv('IMPORT_REC_SETTINGS'))
+    # with open('main.json', encoding='UTF8') as f:
+    #     settings = json.loads(f.read())
     while True:
         try:
             proceed_data(settings)

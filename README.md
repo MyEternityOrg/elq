@@ -86,14 +86,15 @@ init: Создает суперпользователя shop с паролем 1
 
 ### api_import_receipts
 
-В папке examples проекта - приложение сборщик данных по продажам из касс Set Reatail 10 (Crystal)
+В папке examples проекта - приложение сборщик данных по продажам из касс Set Retail 10 (Crystal)
+В файле main.json настройки подключения приложения к кассам и api системы.
 
 * api - Адрес интерфейса.
 * api_key - Ключ доступа.
 * timer - Интервал опроса касс из списка (cashes) в секундах.
 * cashes - массив кассовых терминалов.
 
-settings.json
+main.json
 
 ```
 {
@@ -129,10 +130,10 @@ cd api_import_receipts
 ```
 cd /opt/elq
 git pull
-venv/bin/python3 -m pip install --upgrade pip
-venv/bin/pip install -r requirements.txt
-venv/bin/python3 manage.py migrate
-venv/bin/python3 manage.py runserver
+venv\scripts\python.exe -m pip install --upgrade pip
+venv\scripts\pip install -r requirements.txt
+venv\scripts\python.exe manage.py migrate
+venv\scripts\python.exe manage.py runserver
 ```
 
 ### Обновление проекта из Git (Ubuntu):
@@ -140,10 +141,10 @@ venv/bin/python3 manage.py runserver
 ```
 cd /opt/elq
 git pull
-venv\scripts\python.exe -m pip install --upgrade pip
-venv\scripts\pip install -r requirements.txt
-venv\scripts\python.exe manage.py migrate
-venv\scripts\python.exe manage.py runserver
+venv/bin/python3 -m pip install --upgrade pip
+venv/bin/pip install -r requirements.txt
+venv/bin/python3 manage.py migrate
+venv/bin/python3 manage.py runserver
 ```
 
 # Интеграция
