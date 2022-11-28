@@ -155,7 +155,17 @@ venv\scripts\python.exe manage.py migrate
 venv\scripts\python.exe manage.py runserver
 ```
 
-#### Пример файла импорта чека
+# Интеграция
+
+Интерфейс http://127.0.0.1:8000/devices/import_receipt/ принимает входящие POST запросы и регистрирует чеки.
+В заголовке запроса должен быть передан api_key, в теле запроса файл импорта чека. 
+
+Пример, для curl:
+```
+curl -H "key:secret_key_here" --data "@receipt_1.json" http://127.0.0.1/devices/import_receipt/ > reply_1.json
+```
+
+#### Пример файла импорта чека:
 
 * cash_id - Номер кассы
 * shift_id - Номер смены.
@@ -187,3 +197,16 @@ venv\scripts\python.exe manage.py runserver
 	]
 }
 ```
+
+В случае успешной регистрации, система вернет номер очереди doc_number>0.
+
+В случае ошибки - система вернет doc_number=0 и описание ошибки.
+
+В случае, когда действий не требуется (нечего регистрировать) система вернет doc_number=-1 и сообщение.
+
+Пример файла ответа: 
+
+```
+{"doc_number": -1, "error": "Already have receipt with number 1 for cash 1 in 2022-11-21"}
+```
+
