@@ -78,15 +78,7 @@ venv\Scripts\python manage.py runserver
 
 # Дополнительная информация
 
-### api_key
-
-Для ограничения доступа к post интерфейсу получения кассовых чеков можно задать свой собственный api_key, в файле .env
-
-```
-API_KEY = 'secret_key_here'
-```
-
-#### Суперпользователь
+### Суперпользователь
 
 ```
 init: Создает суперпользователя shop с паролем 123
@@ -114,10 +106,17 @@ settings.json
 		}
 	]
 }
-
 ```
 
-#### Запуск приложения (Windows):
+### Запуск приложения (Ubuntu):
+
+```
+cd examples
+cd api_import_receipts
+../../venv/bin/python3 examples/api_import_receipts/main.py 
+```
+
+### Запуск приложения (Windows):
 
 ```
 cd examples
@@ -125,7 +124,7 @@ cd api_import_receipts
 ..\..\venv\scripts\python.exe main.py
 ```
 
-#### Обновление проекта из Git (Windows):
+### Обновление проекта из Git (Windows):
 
 ```
 cd /opt/elq
@@ -136,15 +135,7 @@ venv/bin/python3 manage.py migrate
 venv/bin/python3 manage.py runserver
 ```
 
-#### Запуск приложения (Ubuntu):
-
-```
-cd examples
-cd api_import_receipts
-../../venv/bin/python3 examples/api_import_receipts/main.py 
-```
-
-#### Обновление проекта из Git (Ubuntu):
+### Обновление проекта из Git (Ubuntu):
 
 ```
 cd /opt/elq
@@ -158,14 +149,23 @@ venv\scripts\python.exe manage.py runserver
 # Интеграция
 
 Интерфейс http://127.0.0.1:8000/devices/import_receipt/ принимает входящие POST запросы и регистрирует чеки.
-В заголовке запроса должен быть передан api_key, в теле запроса файл импорта чека. 
+В заголовке запроса должен быть передан api_key, в теле запроса файл импорта чека.
+
+#### api_key
+
+Для ограничения доступа к post интерфейсу получения кассовых чеков можно задать свой собственный api_key, в файле .env
+
+```
+API_KEY = 'secret_key_here'
+```
 
 Пример, для curl:
+
 ```
 curl -H "key:secret_key_here" --data "@receipt_1.json" http://127.0.0.1/devices/import_receipt/ > reply_1.json
 ```
 
-#### Пример файла импорта чека:
+### Пример файла импорта чека:
 
 * cash_id - Номер кассы
 * shift_id - Номер смены.
@@ -198,13 +198,15 @@ curl -H "key:secret_key_here" --data "@receipt_1.json" http://127.0.0.1/devices/
 }
 ```
 
+### Файл ответа с информацией о номере очереди:
+
 В случае успешной регистрации, система вернет номер очереди doc_number>0.
 
 В случае ошибки - система вернет doc_number=0 и описание ошибки.
 
 В случае, когда действий не требуется (нечего регистрировать) система вернет doc_number=-1 и сообщение.
 
-Пример файла ответа: 
+Пример файла ответа:
 
 ```
 {"doc_number": -1, "error": "Already have receipt with number 1 for cash 1 in 2022-11-21"}
