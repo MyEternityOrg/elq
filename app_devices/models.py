@@ -33,9 +33,11 @@ class Printer(models.Model):
             print_receipt(printer.name, str(document_number), 1, datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
     class Meta:
+        indexes = [models.Index(fields=['name'])]
         db_table = 'printer'
         verbose_name = 'Принтер'
         verbose_name_plural = 'Принтеры'
+        ordering = ['name']
 
 
 class Cash(models.Model):
@@ -79,9 +81,11 @@ class Cash(models.Model):
         return f'{self.name} ({self.ip_address})'
 
     class Meta:
+        indexes = [models.Index(fields=['cash_number'])]
         db_table = 'cash'
         verbose_name = 'Касса'
         verbose_name_plural = 'Кассы'
+        ordering = ['cash_number']
 
 
 class ImportedChecks(models.Model):
@@ -141,7 +145,8 @@ class ImportedChecks(models.Model):
             return False, f'{E}', -1
 
     @staticmethod
-    def register_cash_check(i_cash_id: int, i_shift_id: int, i_check_id: int, i_check_date: datetime.date = now, json_array=None):
+    def register_cash_check(i_cash_id: int, i_shift_id: int, i_check_id: int, i_check_date: datetime.date = now,
+                            json_array=None):
         """
         Регистрирует данные кассового чека, для быстрого ответа - нужна ли запись чека в документ или нет.
 

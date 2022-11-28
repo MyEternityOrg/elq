@@ -30,9 +30,11 @@ class Department(models.Model):
         return f'{self.name}'
 
     class Meta:
+        indexes = [models.Index(fields=['name'])]
         db_table = 'department'
         verbose_name = 'Отдел'
         verbose_name_plural = 'Отделы'
+        ordering = ['name']
 
 
 class Ware(models.Model):
@@ -71,9 +73,11 @@ class Ware(models.Model):
         return f'{self.code} {self.short_name} - {self.department_guid.name}'
 
     class Meta:
+        indexes = [models.Index(fields=['code'])]
         db_table = 'ware'
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
+        ordering = ['code']
 
 
 class Status(models.Model):
@@ -116,6 +120,7 @@ class Status(models.Model):
         return f'{self.name}'
 
     class Meta:
+        ordering = ['id']
         db_table = 'status'
         verbose_name = 'Статус'
         verbose_name_plural = 'Статусы'
@@ -149,10 +154,12 @@ class StatusFlow(models.Model):
         return f'{self.current_status_id.name} -> {self.next_status_id.name}'
 
     class Meta:
+        indexes = [models.Index(fields=['current_status_id', 'next_status_id'])]
         constraints = [
             models.UniqueConstraint(fields=['current_status_id', 'next_status_id'],
                                     name="%(app_label)s_%(class)s_unique"),
         ]
+        ordering = ['current_status_id', 'next_status_id']
         db_table = 'status_flow'
         verbose_name = 'Смена статуса'
         verbose_name_plural = 'Смены статусов'
