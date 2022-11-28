@@ -139,11 +139,15 @@ settings.json
 ### Запуск приложения (Windows):
 
 ```
-venv\scripts\python.exe examples\api_import_receipts\main.py
+cd examples
+cd api_import_receipts
+..\..\venv\scripts\python.exe main.py
 ```
 
 ### Запуск приложения (Ubuntu):
 
 ```
-venv/bin/python3 examples/api_import_receipts/main.py 
+cd examples
+cd api_import_receipts
+../../venv/bin/python3 examples/api_import_receipts/main.py 
 ```
