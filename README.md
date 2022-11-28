@@ -154,3 +154,36 @@ venv\scripts\pip install -r requirements.txt
 venv\scripts\python.exe manage.py migrate
 venv\scripts\python.exe manage.py runserver
 ```
+
+#### Пример файла импорта чека
+
+* cash_id - Номер кассы
+* shift_id - Номер смены.
+* check_id - Номер чека в смене.
+* check_date - Дата чека.
+* wares - Массив товаров (сгруппирован по товарам с суммой по количеству)
+    * ware_code - Код товара в чеке.
+    * ware_count - Количество товара в чеке.
+
+```
+{
+	"cash_id": 1,
+	"shift_id": 1,
+	"check_id": 1,
+	"check_date": "2022-11-17",
+	"wares": [
+		{
+			"ware_code": "48566",
+			"ware_count": 4
+		},
+		{
+			"ware_code": "51356",
+			"ware_count": 1
+		},
+		{
+			"ware_code": "72542",
+			"ware_count": 1
+		}
+	]
+}
+```
