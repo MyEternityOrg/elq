@@ -12,18 +12,10 @@
 
 ## Установка необходимого ПО для Ubuntu
 
-#### Для работы подсистемы печати потребуется доустановить дполнительные пакеты:
-
-```
-apt install gcc
-apt install libcups2-dev
-apt install python3-dev
-apt install python3-setuptools
-```
-
 #### Обновляем информацию о репозиториях
 
 ```
+sudo su -
 apt update
 ```
 
@@ -34,6 +26,15 @@ apt install python3-pip
 apt install screen
 apt install git-core
 apt install python3-venv
+```
+
+#### Для работы подсистемы печати потребуется установить дополнительные пакеты:
+
+```
+apt install gcc
+apt install libcups2-dev
+apt install python3-dev
+apt install python3-setuptools
 ```
 
 #### Настраиваем виртуальное окружение
@@ -51,18 +52,13 @@ venv/bin/pip install pycups
 cp .env.sample .env
 venv/bin/python3 manage.py migrate
 venv/bin/python3 manage.py init
+venv/bin/python3 manage.py runserver
 ```
 
 #### Суперпользователь
 
 ```
 init: Создает суперпользователя shop с паролем 123
-```
-
-### Запуск проекта
-
-```
-venv/bin/python3 manage.py runserver
 ```
 
 ### После этого в браузере можно ввести ip-адрес сервера и откроется проект.
@@ -81,7 +77,7 @@ venv/bin/python3 manage.py runserver
 
 ### Установка для Windows.
 
-#### В качестве примера можно взять elq_win.cmd из конерневой директории проекта.
+#### В качестве примера можно взять elq_win.cmd из корневой директории проекта.
 
 Установка вручную:
 
