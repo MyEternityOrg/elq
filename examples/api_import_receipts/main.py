@@ -29,7 +29,8 @@ def prepared_request(cash=None):
     result_data = {}
     for res in read_data(**cash):
         if result_data.get(f'{res[0]}-{res[1]}-{res[2]}', None) is None:
-            result_data[f'{res[0]}-{res[1]}-{res[2]}'] = {'cash_id': res[0], 'shift_id': res[1], 'check_id': res[2], 'check_date': res[3], 'wares': []}
+            result_data[f'{res[0]}-{res[1]}-{res[2]}'] = {'cash_id': res[0], 'shift_id': res[1], 'check_id': res[2],
+                                                          'check_date': res[3], 'wares': []}
         result_data[f'{res[0]}-{res[1]}-{res[2]}']['wares'].append({'ware_code': res[4], 'ware_count': res[5]})
 
     for el in result_data.values():
