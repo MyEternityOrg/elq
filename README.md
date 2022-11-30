@@ -1,184 +1,203 @@
-# Электронная очередь
+# 1. Общие положения
+## 1.1. Описание.
+Система регистрации чеков в электронной очереди производства, состоит из двух основных компонентов:
+- `Django` - приложение самой электронной очереди и печати номеров заказов
+- Приложение сборщик данных по продажам из касс `Set Retail 10 (Crystal)`
+- Каждый компонент запускается в своем `Docker` контейнере. Названия контейнеров `elq` и `api_import` соответственно.
+- Приложение доступно по следующим портам:
+    - `8000` - веб-интерфейс электронной очереди
+    - `631` - настройка `CUPS`
+## 1.2. Требования к размещению и функционированию
+- Если настройка и установка происходит из сети магазина, то на период установки **необходимо отключить Firewall**, это можно сделать через бота управления `mikrotik` магазина. После завершения настройки, `Firewall` нужно включить.
+- Для работы приложения `Электронная очередь` требуется `Docker`, версия не ниже `20.10.17`, `Linux` или `Windows`.
+- Все настройки `Django` передаются через переменные окружения, в файле `.env`.
+- Настройки `Приложение сборщик данных` в файле `main.json`. 
+- Для печати номера заказов должен быть настроен принтер `SAM4s ELLIX50`. Принтер должен быть доступен через сетевое соединение.
+- Подробное описание файла настроек `.env` и `main.json` и настройка `CUPS`  в разделе [2.3. Установка и настройка приложения]().
+# 2. Установка и настройка
+## 2.1. Установка `Docker` на примере Ubuntu 20.04
+* Обновляем индексы apt
+```bash
+ sudo apt-get update
 
-### Система регистрации чеков в электронной очереди производства.
-
-Основные системные требования:
-
-* Python 3.10 (Windows: https://www.python.org/)
-* Git (Windows: https://github.com/git-guides/install-git)
-* Зависимости (Python) из requirements.txt
-* Дополнительные библиотеки для работы печати (в зависимости от типа ОС)
-
-## Установка необходимого ПО для Ubuntu 22.04
-
-#### Обновляем информацию о репозиториях
-
+ sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
 ```
-sudo su -
-apt update
+* Добавляем GPG ключ `Docker`
+```bash
+ sudo mkdir -p /etc/apt/keyrings
+
+ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+* Подключаем репозиторий `Docker`
+```bash
+ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  ```
+* Устанавливаем `Docker Engine`
+```bash
+ sudo apt-get update
+
+ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+ ```
+* Проверяем версию
+```bash
+docker --version
+```
+## 2.2. Настройка запуска `Docker` без `sudo`
+* Создаем группу `docker`
+```bash
+sudo groupadd docker
+```
+* Добавляем текущего пользователя `$USER` в группу `docker`
+```bash
+sudo usermod -aG docker $USER
+```
+* Применяем изменения
+```bash
+newgrp docker
+```
+* Проверяем запуск без `sudo`
+```bash
+docker run hello-world
+```
+## 2.3. Установка и настройка приложения
+
+### 2.3.1. Запуск контейнеров
+- Клонируем репозиторий приложения
+
+```bash
+git clone http://gitlab.pokupochka.ru:8888/mkozlov/docker_elq
+```
+- Переходим в директорию проекта
+```bash
+cd docker_elq
+```
+- Настройки `Django` приложения находятся в файл `.env`. Переименовываем файл с примерами настроек в `.env`
+```bash
+mv .env.sample .env
+```
+- Вносим изменения, если необходимо. Важным является ключ `API_KEY` к интерфейсу получения кассовых чеков, его необходимо сохранить и указать в настройках `Приложения сборщик данных` в файле `main.json`. 
+
+```bash
+nano .env
+```
+```
+API_KEY = 'secret_key_here'
+SQL_ENGINE = 'django.db.backends.sqlite3'
+SQL_DB_NAME = './elq.sqlite3'
+SQL_DB_USER = 'user'
+SQL_DB_PASSWORD = 'pass'
+SQL_DB_HOST = '.'
+SQL_DB_PORT = 1433
+SQL_OPTIONS = '{}'
+```
+- Настраиваем `Приложения сборщик данных`. Переименовываем файл с примерами настроек в `main.json`
+```bash
+mv ./api_import_receipts/main.json.sample ./api_import_receipts/main.json
+```
+- Редактируем файл, нужно указать ключ `API_KEY` из файла `.env` и настроить ip адреса касс.
+```bash
+nano ./api_import_receipts/main.json
 ```
 
-#### Установка дополнительных пакетов
-
-```
-apt install python3-pip
-apt install screen
-apt install git-core
-apt install python3-venv
-```
-
-#### Для работы подсистемы печати потребуется установить дополнительные пакеты:
-
-```
-apt install gcc
-apt install libcups2-dev
-apt install python3-dev
-apt install python3-setuptools
-```
-
-#### Настраиваем виртуальное окружение
-
-Создаем и активируем виртуальное окружение:
-
-```
-cd /opt
-git clone https://github.com/MyEternityOrg/elq.git
-cd /elq
-python3 -m venv venv
-venv/bin/python3 -m pip install --upgrade pip
-venv/bin/pip install -r requirements.txt
-venv/bin/pip install pycups
-cp .env.sample .env
-venv/bin/python3 manage.py migrate
-venv/bin/python3 manage.py init
-venv/bin/python3 manage.py runserver
-```
-
-## Установка для Windows.
-
-В качестве примера можно взять elq_win.cmd из корневой директории проекта.
-
-Установка вручную:
-
-#### В нужном каталоге открываем командную строку.
-
-```
-git clone https://github.com/MyEternityOrg/elq.git
-cd elq
-git pull
-python -m venv venv
-venv\scripts\python.exe -m pip install --upgrade pip
-venv\Scripts\pip install -r requirements.txt
-venv\Scripts\pip install win32printing
-IF NOT EXIST .env copy .env.sample .env
-venv\scripts\python.exe manage.py migrate
-venv\scripts\python.exe manage.py init
-venv\Scripts\python manage.py runserver
-```
-
-# Дополнительная информация
-
-### Суперпользователь
-
-```
-init: Создает суперпользователя shop с паролем 123
-```
-
-### api_import_receipts
-
-В папке examples проекта - приложение сборщик данных по продажам из касс Set Retail 10 (Crystal)
-Настройки подключения приложения к кассам и api системы - хранятся в env файле проекта, для использования отдельно - раскомментируйте чтение из main.json
-
-Данные настройки ниже - рассмотрены для файла. Для изменения в переменной окружения env проекта - содержимое файла должно находиться в переменной: IMPORT_REC_SETTINGS
-
-* api - Адрес интерфейса.
-* api_key - Ключ доступа.
-* timer - Интервал опроса касс из списка (cashes) в секундах.
-* cashes - массив кассовых терминалов.
-
-main.json
-
-```
+Пример настройки для `Магазина 116` :
+```json
 {
-	"api": "http://127.0.0.1:8000//devices/import_receipt/",
+	"api": "http://elq:8000/devices/import_receipt/",
 	"api_key": "secret_key_here",
 	"timer": 3,
 	"cashes": [
 		{
-			"sql_server": "127.0.0.1"
+			"sql_server": "10.1.16.11"
+		},
+		{
+			"sql_server": "10.1.16.12"
+		},
+		{
+			"sql_server": "10.1.16.13"
+		},
+		{
+			"sql_server": "10.1.16.14"
+		},
+		{
+			"sql_server": "10.1.16.15"
 		}
 	]
 }
 ```
+- Запускаем контейнеры
+```bash
+docker compose up -d
+```
+* Дожидаемся сбора образов и запуска. Проверяем, что контейнеры в статусе `up`
+```bash
+docker ps- a
+```
+* Если возникли проблемы, можно посмотреть лог
 
-### Запуск приложения (Ubuntu):
+```bash
+docker logs elq
+```
+```bash
+docker logs api_import
+```
+### 2.3.2. Настройка `CUPS`
+- Для печати талонов нужно настроить принтер в службе `CUPS`, она доступа по адресу. Логин/пароль `print`.
+```
+http://ip_сервера:631/
+```
+- Добавляем принтер с подключением через socket, в строке подключения указываем
+```
+socket://ip_принтера:6001
+```
+- Важно запомнить имя под которым добавляется принтер, например `ELLIX50`. Его затем нужно будет указать в веб интерфейсе `Django` приложения
+- на этапе выбора модели нужно подгрузить `PPT` файл. Для модели `SAM4s ELLIX50` файл можно скачать по прямой ссылке [git](http://gitlab.pokupochka.ru:8888/mkozlov/docker_elq/-/blob/master/SAM4s_GIANT100.ppd)
+- Для проверки можно отправить тестовую страницу на печать
+### 2.3.3. Настройка приложения
+- Приложение доступно по ссылке. Логин/пароль магазина `shop 123`
+```
+http://ip_сервера:8000/
+```
+- В разделе администрирования настраиваются `Кассы` и `Принтеры`. **ВАЖНО**. Имя принтера нужно взять из раздела [2.3.2. Настройка `CUPS`]()
 
 ```
-cd examples
-cd api_import_receipts
-../../venv/bin/python3 examples/api_import_receipts/main.py 
+http://ip_сервера:8000/admin/
 ```
-
-### Запуск приложения (Windows):
-
+# 3. Интеграция
+Интерфейс 
 ```
-cd examples
-cd api_import_receipts
-..\..\venv\scripts\python.exe main.py
+http://ip_сервера:8000/devices/import_receipt/
 ```
-
-### Обновление проекта из Git (Windows):
-
-```
-cd /opt/elq
-git pull
-venv\scripts\python.exe -m pip install --upgrade pip
-venv\scripts\pip install -r requirements.txt
-venv\scripts\python.exe manage.py migrate
-venv\scripts\python.exe manage.py runserver
-```
-
-### Обновление проекта из Git (Ubuntu):
-
-```
-cd /opt/elq
-git pull
-venv/bin/python3 -m pip install --upgrade pip
-venv/bin/pip install -r requirements.txt
-venv/bin/python3 manage.py migrate
-venv/bin/python3 manage.py runserver
-```
-
-# Интеграция
-
-Интерфейс http://127.0.0.1:8000/devices/import_receipt/ принимает входящие POST запросы и регистрирует чеки.
+принимает входящие POST запросы и регистрирует чеки.
 В заголовке запроса должен быть передан api_key, в теле запроса файл импорта чека.
 
-#### api_key
-
-Для ограничения доступа к post интерфейсу получения кассовых чеков можно задать свой собственный api_key, в файле .env
+Для ограничения доступа к post интерфейсу получения кассовых чеков можно задать свой собственный `api_key`, в файле `.env`
 
 ```
 API_KEY = 'secret_key_here'
 ```
 
-Пример, для curl:
+Пример, для `curl`:
 
 ```
 curl -H "key:secret_key_here" --data "@receipt_1.json" http://127.0.0.1/devices/import_receipt/ > reply_1.json
 ```
+## Пример файла импорта чека:
 
-### Пример файла импорта чека:
+* `cash_id` - Номер кассы
+* `shift_id` - Номер смены.
+* `check_id` - Номер чека в смене.
+* `check_date` - Дата чека.
+* `wares` - Массив товаров (сгруппирован по товарам с суммой по количеству)
+    * `ware_code` - Код товара в чеке.
+    * `ware_count` - Количество товара в чеке.
 
-* cash_id - Номер кассы
-* shift_id - Номер смены.
-* check_id - Номер чека в смене.
-* check_date - Дата чека.
-* wares - Массив товаров (сгруппирован по товарам с суммой по количеству)
-    * ware_code - Код товара в чеке.
-    * ware_count - Количество товара в чеке.
-
-```
+```json
 {
 	"cash_id": 1,
 	"shift_id": 1,
@@ -201,17 +220,17 @@ curl -H "key:secret_key_here" --data "@receipt_1.json" http://127.0.0.1/devices/
 }
 ```
 
-### Файл ответа с информацией о номере очереди:
+## Файл ответа с информацией о номере очереди:
 
-В случае успешной регистрации, система вернет номер очереди doc_number>0.
+В случае успешной регистрации, система вернет номер очереди `doc_number>0`.
 
-В случае ошибки - система вернет doc_number=0 и описание ошибки.
+В случае ошибки - система вернет `doc_number=0` и описание ошибки.
 
-В случае, когда действий не требуется (нечего регистрировать) система вернет doc_number=-1 и сообщение.
+В случае, когда действий не требуется (нечего регистрировать) система вернет `doc_number=-1` и сообщение.
 
 Пример файла ответа:
 
-```
+```json
 {"doc_number": -1, "error": "Already have receipt with number 1 for cash 1 in 2022-11-21"}
 ```
 

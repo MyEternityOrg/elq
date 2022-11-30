@@ -1,0 +1,22 @@
+{
+	"api": "http://elq:8000/devices/import_receipt/",
+	"api_key": "secret_key_here",
+	"timer": 3,
+	"cashes": [
+		{
+			"sql_server": "xxx.xxx.xxx.xxx"
+		},
+		{
+			"sql_server": "xxx.xxx.xxx.xxx"
+		},
+		{
+			"sql_server": "xxx.xxx.xxx.xxx"
+		},
+		{
+			"sql_server": "xxx.xxx.xxx.xxx"
+		},
+		{
+			"sql_server": "xxx.xxx.xxx.xxx"
+		}
+	]
+}

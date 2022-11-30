@@ -1,0 +1,51 @@
+FROM ubuntu:20.04
+LABEL app="elq"
+
+ENV TZ=Europe/Moscow
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+WORKDIR /app
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+&& apt-get update \
+&& apt-get install -y \
+  sudo \
+  whois \
+  usbutils \
+  cups \
+  cups-client \
+  cups-bsd \
+  cups-filters \
+  foomatic-db-compressed-ppds \
+  printer-driver-all \
+  openprinting-ppds \
+  smbclient \
+  git \
+  gcc \
+  python3-pip \
+  libcups2-dev \
+  python3-dev \
+  python3-setuptools
+
+# Add user and disable sudo password checking
+RUN useradd \
+  --groups=sudo,lp,lpadmin \
+  --create-home \
+  --home-dir=/home/print \
+  --shell=/bin/bash \
+  --password=$(mkpasswd print) \
+  print \
+&& sed -i '/%sudo[[:space:]]/ s/ALL[[:space:]]*$/NOPASSWD:ALL/' /etc/sudoers
+
+# CUPS - Copy the default configuration file
+COPY --chown=root:lp cupsd.conf /etc/cups/cupsd.conf
+COPY --chown=root:lp RasterToSPrinter /usr/lib/cups/filter/RasterToSPrinter
+
+# Deploy django app
+RUN git clone http://gitlab.pokupochka.ru:8888/mkozlov/docker_elq.git && cd docker_elq && pip3 install -r requirements.txt
+COPY .env /app/docker_elq
+RUN cd docker_elq && python3 manage.py migrate && python3 manage.py init
+
+EXPOSE 8000
+EXPOSE 631
+CMD cd docker_elq && git pull origin master && service cups restart && python3 manage.py runserver 0.0.0.0:8000

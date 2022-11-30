@@ -3,9 +3,7 @@ import json
 import os
 import time
 from contextlib import closing
-from dotenv import dotenv_values
-from dotenv import load_dotenv
-
+import time
 import psycopg2
 import requests
 from psycopg2.extras import DictCursor
@@ -59,10 +57,10 @@ def proceed_data(system_settings=None):
 
 
 if __name__ == "__main__":
-    load_dotenv('../../.env')
-    settings = json.loads(os.getenv('IMPORT_REC_SETTINGS'))
-    # with open('main.json', encoding='UTF8') as f:
-    #     settings = json.loads(f.read())
+    with open('main.json', encoding='UTF8') as f:
+        settings = json.loads(f.read())
+    print("Starting...")
+    time.sleep(5)
     while True:
         try:
             proceed_data(settings)

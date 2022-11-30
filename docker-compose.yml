@@ -1,0 +1,33 @@
+version: '2.1'
+services:
+  elq:
+    build:
+      context: .
+    container_name: elq
+    expose:
+      - 8000
+      - 631
+    ports:
+      - 8000:8000
+      - 631:631
+    restart: always
+    volumes:
+      - 'elq:/app/'
+      - 'cups:/etc/cups/'
+  api_import:
+    build:
+      context: .\api_import_receipts\.
+    container_name: api_import
+    restart: always
+    depends_on:
+      - elq
+    volumes:
+      - 'api_import:/app/'
+volumes:
+  elq:
+    driver: local
+  api_import:
+    driver: local
+  cups:
+    driver: local
+

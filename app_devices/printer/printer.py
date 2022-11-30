@@ -47,6 +47,7 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
         write_pdf(data, 39, '-----------', 8)
         data.output("receipt.pdf")
         conn = cups.Connection()
+        print(cups.getServer())
         printers = conn.getPrinters()
         for printer in printers:
             if str(printer).lower() == printer_name.lower():
@@ -69,4 +70,4 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
 
 
 if __name__ == "__main__":
-    print_receipt('sam4s', '1230', 4)
+    print_receipt('ELLIX50', '1230', 4)

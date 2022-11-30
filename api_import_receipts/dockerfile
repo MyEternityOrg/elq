@@ -1,0 +1,18 @@
+FROM python:3.9-alpine
+LABEL app="api_import"
+
+ENV TZ=Europe/Moscow
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+WORKDIR /app
+
+RUN apk update && apk add git\
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && git clone http://gitlab.pokupochka.ru:8888/mkozlov/docker_elq.git  \
+    && cd docker_elq/api_import_receipts \
+    && pip install -r requirements.txt
+
+COPY main.json /app/docker_elq/api_import_receipts/
+
+
+CMD cd docker_elq && git pull origin master && cd api_import_receipts && python main.py
