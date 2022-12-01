@@ -233,4 +233,3 @@ curl -H "key:secret_key_here" --data "@receipt_1.json" http://127.0.0.1/devices/
 ```json
 {"doc_number": -1, "error": "Already have receipt with number 1 for cash 1 in 2022-11-21"}
 ```
-
