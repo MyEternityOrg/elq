@@ -1,10 +1,13 @@
 .row {
-    font-min-size: 32pt;
-    font-size: 48pt;
+    font-size: 4vw;
     text-align: center;
     vertical-align: middle;
     padding: 0;
     margin: 3px;
+}
+
+.navbar {
+    font-size: 1vw;
 }
 
 .doc-styled {
@@ -17,13 +20,13 @@
 }
 
 .btn-action {
-    width: 72px;
-    height: 72px;
-    min-width: 72px;
-    min-height: 72px;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
     margin: 0;
     padding: 0;
-    font-size: 52px;
+    font-size: 3vw;
     vertical-align: middle;
     text-align: center;
     justify-content: center;

@@ -3,8 +3,8 @@
 {% block content %}
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <div class="text">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+{#            <div class="text">#}
+                <ul class="navbar-nav me-auto mb-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:index' %}"><i class="bi bi-house-heart"></i></a>
                     </li>
@@ -13,9 +13,9 @@
                             очередь</a>
                     </li>
                 </ul>
-            </div>
+{#            </div>#}
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,7 +28,7 @@
                     </li>
                 </ul>
             </div>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-auto">
                 {% if user.is_active %}
                     <a class="nav-link"><i class="bi bi-person"></i> {% user_login_name user %}<span
                             class="sr-only">(current)</span></a>

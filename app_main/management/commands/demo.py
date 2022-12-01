@@ -26,10 +26,17 @@ class Command(BaseCommand):
 
         Document.objects.all().delete()
         d = datetime.date.today().day
-        d_arr = [d - 2, d - 1, d]
+        m = datetime.date.today().month
+        y = datetime.date.today().year
+        if d > 3:
+            d_arr = [d - 2, d - 1, d]
+        elif d == 2:
+            d_arr = [d-1, d]
+        else:
+            d_arr = [d]
         wares = [w.guid for w in Ware.objects.all()]
         for i in range(1, 101):
-            doc = Document.create_document(datetime.date(2022, 11, random.choice(d_arr)))
+            doc = Document.create_document(datetime.date(y, m, random.choice(d_arr)))
             for k in range(1, 3):
                 DocumentWare.add_ware(doc.guid, random.choice(wares), k)
             doc.status_id = get_status(random.choice([1, 2, 3, 4]))
