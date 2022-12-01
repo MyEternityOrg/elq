@@ -39,8 +39,8 @@ RUN useradd \
 
 # CUPS - Copy the default configuration file
 COPY --chown=root:lp cupsd.conf /etc/cups/cupsd.conf
-COPY --chown=root:lp RasterToSPrinter /usr/lib/cups/filter/RasterToSPrinter
-
+COPY --chown=root:root RasterToSPrinter /usr/lib/cups/filter/RasterToSPrinter
+RUN chmod 755 /usr/lib/cups/filter/RasterToSPrinter 
 # Deploy django app
 RUN git clone https://github.com/MyEternityOrg/elq.git && cd elq && pip3 install -r requirements.txt
 COPY .env /app/elq

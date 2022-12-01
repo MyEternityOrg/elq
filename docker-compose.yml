@@ -16,7 +16,7 @@ services:
       - 'cups:/etc/cups/'
   api_import:
     build:
-      context: .\api_import_receipts\.
+      context: ./api_import_receipts/.
     container_name: api_import
     restart: always
     depends_on:
