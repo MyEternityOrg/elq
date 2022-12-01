@@ -71,7 +71,7 @@ docker run hello-world
 - Клонируем репозиторий приложения
 
 ```bash
-git clone http://gitlab.pokupochka.ru:8888/mkozlov/docker_elq
+git clone https://github.com/MyEternityOrg/elq
 ```
 - Переходим в директорию проекта
 ```bash
