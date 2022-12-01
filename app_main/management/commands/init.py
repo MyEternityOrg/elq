@@ -36,7 +36,7 @@ class Command(BaseCommand):
         if Status.objects.all().count() == 0:
             print('Creating statuses...')
             Status.objects.create(id=1, name='Готовится', show=True, finished=False, color='gray', icon='bi bi-bag')
-            Status.objects.create(id=2, name='Готов к выдаче', show=True, finished=False, color='#d9b9b6',
+            Status.objects.create(id=2, name='Готов', show=True, finished=False, color='#d9b9b6',
                                   icon='bi bi-bag-plus')
             Status.objects.create(id=3, name='Выдан', show=False, finished=True, color='#0c4128',
                                   icon='bi bi-bag-check')
