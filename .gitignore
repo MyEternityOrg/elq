@@ -137,3 +137,4 @@ dmypy.json
 /media/
 /media/django-summernote/
 /examples/print/arial.pkl
+/api_import_receipts/main.json
