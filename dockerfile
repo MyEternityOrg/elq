@@ -42,7 +42,7 @@ COPY --chown=root:lp cupsd.conf /etc/cups/cupsd.conf
 COPY --chown=root:lp RasterToSPrinter /usr/lib/cups/filter/RasterToSPrinter
 
 # Deploy django app
-RUN git clone http://gitlab.pokupochka.ru:8888/mkozlov/docker_elq.git && cd docker_elq && pip3 install -r requirements.txt
+RUN git clone https://github.com/MyEternityOrg/elq.git && cd docker_elq && pip3 install -r requirements.txt
 COPY .env /app/docker_elq
 RUN cd docker_elq && python3 manage.py migrate && python3 manage.py init
 
