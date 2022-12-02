@@ -39,6 +39,7 @@ def write_pdf(pdf, offset_y: int = 0, text: str = '', size: int = 8):
 
 def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1,
                   dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')):
+    print(f'Printing document: {receipt_id} - {receipt_count} times.')
     if platform.system() == 'Linux':
         data = create_pdf()
         write_pdf(data, 3, 'Электронная очередь', 8)
