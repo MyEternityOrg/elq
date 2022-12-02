@@ -48,7 +48,9 @@ def proceed_data(system_settings=None):
             r.trust_env = False
             r = requests.post(f'{system_settings.get("api", "http://127.0.0.1/devices/import_receipt")}', headers=h,
                               data=k)
+            print(f'Sending {k}')
             reply = r.json()
+            print(f'Reply: {r}')
             if dict(reply).get('doc_number', 0) > 0:
                 print(
                     f'[{datetime.datetime.now()}] Registered receipt: '
