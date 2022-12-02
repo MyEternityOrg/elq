@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import now
 from app_main.models import Ware, DocumentWare, Document, Status
+from elq.settings import CALC_PRINT_TICKETS
 
 
 class Printer(models.Model):
@@ -28,9 +29,14 @@ class Printer(models.Model):
         return f'{self.name} ({self.ip_address})'
 
     @staticmethod
-    def print_document(printer, document_number: int, dts: datetime.date = now):
+    def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0):
         if printer is not None:
-            print_receipt(printer.name, str(document_number), 1, datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
+            if not CALC_PRINT_TICKETS:
+                doc_count = 1
+            else:
+                doc_count += 1
+            print_receipt(printer.name, str(document_number), doc_count,
+                          datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
     class Meta:
         indexes = [models.Index(fields=['name'])]
@@ -120,6 +126,7 @@ class ImportedChecks(models.Model):
     @staticmethod
     def process_check_data(json_array=None, dts: datetime.date = now):
         wares_list = []
+        depart_count = []
         try:
             if type(json_array) is list:
                 for k in json_array:
@@ -133,14 +140,15 @@ class ImportedChecks(models.Model):
                     document = Document.create_document(dts)
                     if document is not None:
                         for k in wares_list:
+                            depart_count.append(Ware.objects.get(guid=k[0]).department_guid.guid)
                             DocumentWare.add_ware(document.guid, k[0], k[1])
-                        return True, '', document.number
+                        return True, '', document.number, len(set(depart_count))
                     else:
-                        return False, 'Error registering document', -1
+                        return False, 'Error registering document', -1, 0
                 else:
-                    return False, 'Nothing to register', 0
+                    return False, 'Nothing to register', 0, 0
             else:
-                return False, 'Invalid json structure', -1
+                return False, 'Invalid json structure', -1, 0
         except Exception as E:
             return False, f'{E}', -1
 
@@ -162,11 +170,12 @@ class ImportedChecks(models.Model):
         doc_msg = ''
         doc_state = False
         doc_printer = None
+        doc_count = 0
 
         cash_guid = Cash.objects.filter(cash_number=i_cash_id).first()
         if cash_guid is None:
             return False, f'Invalid cash number, registered numbers are:' \
-                          f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, None
+                          f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, None, 0
         doc_printer = cash_guid.printer_guid
         imported_check = ImportedChecks.objects.filter(cash_guid=cash_guid,
                                                        check_date=i_check_date, shift_id=i_shift_id).first()
@@ -174,23 +183,23 @@ class ImportedChecks(models.Model):
             if imported_check.check_id >= i_check_id:
                 return False, f'Already have receipt with number {imported_check.check_id}' \
                               f' for cash {i_cash_id} ' \
-                              f'in {i_check_date}', doc_number, doc_printer
+                              f'in {i_check_date}', doc_number, doc_printer, 0
             else:
-                doc_state, doc_msg, doc_number = ImportedChecks.process_check_data(json_array, i_check_date)
+                doc_state, doc_msg, doc_number, doc_count = ImportedChecks.process_check_data(json_array, i_check_date)
                 if doc_state:
                     imported_check.check_id = i_check_id
                     imported_check.save()
-                    return True, '', doc_number, doc_printer
+                    return True, '', doc_number, doc_printer, doc_count
                 else:
-                    return doc_state, doc_msg, doc_number, doc_printer
+                    return doc_state, doc_msg, doc_number, doc_printer, doc_count
         else:
-            doc_state, doc_msg, doc_number = ImportedChecks.process_check_data(json_array, i_check_date)
+            doc_state, doc_msg, doc_number, doc_count = ImportedChecks.process_check_data(json_array, i_check_date)
             if doc_state:
                 ImportedChecks.objects.create(cash_guid=cash_guid, check_id=i_check_id, shift_id=i_shift_id,
                                               check_date=i_check_date)
-                return True, '', doc_number, doc_printer
+                return True, '', doc_number, doc_printer, doc_count
             else:
-                return doc_state, doc_msg, doc_number, doc_printer
+                return doc_state, doc_msg, doc_number, doc_printer, doc_count
 
     class Meta:
         constraints = [

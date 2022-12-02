@@ -22,9 +22,12 @@ class Command(BaseCommand):
             User.objects.create(id=2, username='shop',
                                 password='pbkdf2_sha256$390000$7KYChLAKiOnRkiV7ozUGMz$mQ/ZUcfI3NU0+07RmdPwmKYKvn2pID5faYqTzOZ2tWg=',
                                 email='shop@pokupochka.ru', is_staff=True, is_active=True, is_superuser=True)
-            for i in range(1, 9):
-                User.objects.create(id=i + 2, username=f'reserved_{i}', is_staff=True, is_active=True,
-                                    is_superuser=True)
+            User.objects.create(id=3, username='mag',
+                                password='pbkdf2_sha256$390000$AimCekoTBz091WLkYN8Rzz$no5q7jMGYuI+JZFdxS8RHCMCvOHf/BawUTkKsIb5X6Y=',
+                                email='mag@pokupochka.ru', is_staff=False, is_active=True, is_superuser=False)
+            for i in range(4, 7):
+                User.objects.create(id=i, username=f'reserved_id_{i}', is_staff=False, is_active=True,
+                                    is_superuser=False)
 
         if Department.objects.all().count() == 0:
             print('Creating departments...')

@@ -9,6 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8crc!h^!m(&h3qbkp!%3-a1kb&e$gp$pu2!zoi-1g!!i#l_i1s'
+CALC_PRINT_TICKETS = False
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 

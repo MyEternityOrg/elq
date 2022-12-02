@@ -39,10 +39,11 @@ def write_pdf(pdf, offset_y: int = 0, text: str = '', size: int = 8):
 
 def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1,
                   dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')):
+    print(f'Printing document: {receipt_id} - {receipt_count} times.')
     if platform.system() == 'Linux':
         data = create_pdf()
         write_pdf(data, 3, 'Электронная очередь', 8)
-        write_pdf(data, 18, f'#{receipt_id}', 24)
+        write_pdf(data, 18, f'№ {receipt_id}', 24)
         write_pdf(data, 33, f"{dts}", 8)
         write_pdf(data, 39, '-----------', 8)
         data.output("receipt.pdf")
@@ -62,7 +63,7 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
                 with Printer(printer_name=printer_name) as printer:
                     printer.width = 2048
                     printer.text("Электронная очередь", align="center", font_config={"height": 12})
-                    printer.text(f'#{receipt_id}', align="center", font_config={"height": 18})
+                    printer.text(f'№ {receipt_id}', align="center", font_config={"height": 18})
                     printer.text(f"{dts}", align="center",
                                  font_config={"height": 12})
                     printer.text('-----------')
