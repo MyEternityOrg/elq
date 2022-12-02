@@ -50,7 +50,7 @@ def proceed_data(system_settings=None):
                               data=k)
             print(f'Sending {k}')
             reply = r.json()
-            print(f'Reply: {r}')
+            print(f'Reply: {reply}')
             if dict(reply).get('doc_number', 0) > 0:
                 print(
                     f'[{datetime.datetime.now()}] Registered receipt: '
