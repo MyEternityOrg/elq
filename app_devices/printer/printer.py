@@ -45,7 +45,8 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
         write_pdf(data, 3, 'Электронная очередь', 8)
         write_pdf(data, 18, f'№ {receipt_id}', 32)
         write_pdf(data, 33, f"{dts}", 8)
-        write_pdf(data, 39, '-----------', 8)
+        write_pdf(data, 39, 'Приятного аппетита :)', 8)
+        write_pdf(data, 42, '-----------', 8)
         data.output("receipt.pdf")
         conn = cups.Connection()
         print(cups.getServer())
@@ -65,6 +66,8 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
                     printer.text("Электронная очередь", align="center", font_config={"height": 12})
                     printer.text(f'№ {receipt_id}', align="center", font_config={"height": 24})
                     printer.text(f"{dts}", align="center",
+                                 font_config={"height": 12})
+                    printer.text("Приятного аппетита :)", align="center",
                                  font_config={"height": 12})
                     printer.text('-----------')
                     printer.new_page()
