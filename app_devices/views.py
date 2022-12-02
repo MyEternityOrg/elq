@@ -9,7 +9,7 @@ from app_devices.models import ImportedChecks, Printer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
-from elq.settings import API_KEY
+from elq.settings import API_KEY, CALC_PRINT_TICKETS
 
 
 @method_decorator(csrf_exempt, name='dispatch')

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import now
 from app_main.models import Ware, DocumentWare, Document, Status
+from elq.settings import CALC_PRINT_TICKETS
 
 
 class Printer(models.Model):
@@ -28,10 +29,12 @@ class Printer(models.Model):
         return f'{self.name} ({self.ip_address})'
 
     @staticmethod
-    def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 1):
+    def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0):
         if printer is not None:
-            if doc_count > 0:
-                doc_count = + 1
+            if not CALC_PRINT_TICKETS:
+                doc_count = 1
+            else:
+                doc_count += 1
             print_receipt(printer.name, str(document_number), doc_count,
                           datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
