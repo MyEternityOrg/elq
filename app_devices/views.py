@@ -24,6 +24,7 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
         if self.request.headers.get('key', None) == API_KEY:
             try:
                 json_input = json.loads(self.request.body)
+                print(f'Importing from json : {json_input}')
                 if type(json_input) is dict:
                     result, msg, json_reply_number, printer = ImportedChecks.register_cash_check(
                         json_input.get('cash_id', 0),
