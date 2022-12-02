@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
-RUN apk update && apk add git\
+RUN apk update && apk add git && apk add nano\
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && git clone https://github.com/MyEternityOrg/elq.git  \
     && cd elq/api_import_receipts \

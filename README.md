@@ -168,6 +168,35 @@ http://ip_сервера:8000/
 ```
 http://ip_сервера:8000/admin/
 ```
+### 2.3.4. Внесение правок в файлы конфигурации
+Если нужно внести изменения в файлы в уже развернутом приложении:
+- для изменения файла `main.json`
+```bash
+cd elq
+docker exec -it api_import /bin/sh
+nano ./elq/api_import_receipts/main.json
+```
+- для изменения файла `.env`
+```bash
+cd elq
+docker exec -it elq /bin/sh
+nano ./elq/.env
+```
+после внесения правок, нужно отключиться от контейнера и выполнить перезапуск
+
+```bash
+exit
+docker compose stop
+docker compose up -d
+```
+### 2.3.5. Установка обновлений
+Обновления устанавливаются автоматически из `github` при перезапуске контейнеров.
+
+```bash
+cd elq
+docker compose stop
+docker compose up -d
+```
 # 3. Интеграция
 Интерфейс 
 ```
