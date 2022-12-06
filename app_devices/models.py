@@ -31,7 +31,7 @@ class Printer(models.Model):
     @staticmethod
     def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0):
         if printer is not None:
-            if not CALC_PRINT_TICKETS:
+            if CALC_PRINT_TICKETS == 0:
                 doc_count = 1
             else:
                 doc_count += 1
