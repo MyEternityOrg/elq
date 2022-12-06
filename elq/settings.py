@@ -13,6 +13,7 @@ try:
     CALC_PRINT_TICKETS = int(os.getenv("CALC_PRINT_TICKETS"))
 except Exception as E:
     print('Failed setting in env file: CALC_PRINT_TICKETS, please set. using default = 0 now')
+    print(f'Error: {E}')
     CALC_PRINT_TICKETS = 0
 
 DEBUG = True
