@@ -33,8 +33,12 @@ class Printer(models.Model):
         if printer is not None:
             if CALC_PRINT_TICKETS == 0:
                 doc_count = 1
-            else:
+            elif CALC_PRINT_TICKETS == -1:
                 doc_count += 1
+            elif CALC_PRINT_TICKETS > 0:
+                doc_count = CALC_PRINT_TICKETS
+            else:
+                doc_count = 0
             print_receipt(printer.name, str(document_number), doc_count,
                           datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
