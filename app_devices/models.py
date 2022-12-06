@@ -13,11 +13,11 @@ class Printer(models.Model):
     """
         Сетевой принтер
 
-        guid : Идентификатор.
+        Guid : Идентификатор.
 
-        name : Наименование.
+        Name : Наименование.
 
-        ip_address : Адрес устройства в сети.
+        Ip_address : Адрес устройства в сети.
 
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
@@ -52,21 +52,21 @@ class Cash(models.Model):
     """
         Касса
 
-        guid : Идентификатор.
+        Guid : Идентификатор.
 
-        name : Наименование кассы.
+        Name : Наименование кассы.
 
-        ip_address : Адрес устройства в сети.
+        Ip_address : Адрес устройства в сети.
 
-        cash_printer : Принтер. Если задан, то касса печатает на нем полученные данные заказа.
+        Cash_printer : Принтер. Если задан, то касса печатает на нем полученные данные заказа.
 
-        pg_login : Логин для postgre кассы.
+        Pg_login : Логин для postgres кассы.
 
-        pg_password : Пароль для postgre кассы.
+        Pg_password : Пароль для postgres кассы.
 
-        pd_db_name : Имя БД postgre кассы.
+        Pd_db_name : Имя БД postgres кассы.
 
-        request_interval: Интервал опроса кассы в миллисекундах
+        Request_interval: Интервал опроса кассы в миллисекундах
 
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
@@ -80,7 +80,7 @@ class Cash(models.Model):
     printer_guid = models.ForeignKey(Printer, null=True, on_delete=models.CASCADE, verbose_name='Принтер',
                                      db_column='printer_guid')
     pg_login = models.CharField(default='postgres', max_length=64, verbose_name='Логин SQL', db_column='sql_login')
-    pg_password = models.CharField(default='postgres', max_length=64, verbose_name='Пароль SQL', db_column='sql_passw')
+    pg_password = models.CharField(default='postgres', max_length=64, verbose_name='Пароль SQL', db_column='sql_pass')
     pg_db_name = models.CharField(default='cash', max_length=64, verbose_name='Наименование БД', db_column='sql_db')
     request_interval = models.IntegerField(default=2000, verbose_name='Интервал опроса кассы, м/сек',
                                            db_column='request_interval')
@@ -101,13 +101,13 @@ class ImportedChecks(models.Model):
         Данные импортируемых чеков.
         Хранится последний номер чека, который был получен к указанной кассы в разрезе даты.
 
-        guid : Ключ записи.
+        Guid : Ключ записи.
 
-        cash_id : Номер кассы.
+        Cash_id : Номер кассы.
 
-        check_id : Номер чека.
+        Check_id : Номер чека.
 
-        check_date: Дата смены чека.
+        Check_date: Дата смены чека.
 
     """
     guid = models.CharField(primary_key=True, db_column='guid', default=uuid.uuid4, max_length=64,
@@ -161,23 +161,22 @@ class ImportedChecks(models.Model):
         Регистрирует данные кассового чека, для быстрого ответа - нужна ли запись чека в документ или нет.
 
         :param i_cash_id: Идентификатор, номер кассы.
+        :param i_shift_id: Номер смены.
         :param i_check_id:  Номер чека.
         :param i_check_date: Дата чека.
         :param json_array: Массив данных чека.
-        :return: bool:register result, str:message
+        :return: bool:register result, str:message, int:doc_number, str:doc_printer, int:doc_count
         """
         if json_array is None:
             json_array = []
         doc_number = -1
-        doc_msg = ''
-        doc_state = False
         doc_printer = None
         doc_count = 0
 
         cash_guid = Cash.objects.filter(cash_number=i_cash_id).first()
         if cash_guid is None:
             return False, f'Invalid cash number, registered numbers are:' \
-                          f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, None, 0
+                          f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, doc_printer, doc_count
         doc_printer = cash_guid.printer_guid
         imported_check = ImportedChecks.objects.filter(cash_guid=cash_guid,
                                                        check_date=i_check_date, shift_id=i_shift_id).first()
@@ -185,13 +184,13 @@ class ImportedChecks(models.Model):
             if imported_check.check_id >= i_check_id:
                 return False, f'Already have receipt with number {imported_check.check_id}' \
                               f' for cash {i_cash_id} ' \
-                              f'in {i_check_date}', doc_number, doc_printer, 0
+                              f'in {i_check_date}', doc_number, doc_printer, doc_count
             else:
                 doc_state, doc_msg, doc_number, doc_count = ImportedChecks.process_check_data(json_array, i_check_date)
                 if doc_state:
                     imported_check.check_id = i_check_id
                     imported_check.save()
-                    return True, '', doc_number, doc_printer, doc_count
+                    return True, doc_msg, doc_number, doc_printer, doc_count
                 else:
                     return doc_state, doc_msg, doc_number, doc_printer, doc_count
         else:
