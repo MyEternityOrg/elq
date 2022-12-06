@@ -10,7 +10,7 @@ load_dotenv(BASE_DIR / '.env')
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8crc!h^!m(&h3qbkp!%3-a1kb&e$gp$pu2!zoi-1g!!i#l_i1s'
 try:
-    CALC_PRINT_TICKETS = os.getenv("CALC_PRINT_TICKETS")
+    CALC_PRINT_TICKETS = int(os.getenv("CALC_PRINT_TICKETS"))
 except Exception as E:
     print('Failed setting in env file: CALC_PRINT_TICKETS, please set. using default = 0 now')
     CALC_PRINT_TICKETS = 0
