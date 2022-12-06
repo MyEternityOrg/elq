@@ -31,14 +31,12 @@ class Printer(models.Model):
     @staticmethod
     def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0):
         if printer is not None:
-            if CALC_PRINT_TICKETS == 0:
-                doc_count = 1
-            elif CALC_PRINT_TICKETS == -1:
+            if CALC_PRINT_TICKETS == -1:
                 doc_count += 1
             elif CALC_PRINT_TICKETS > 0:
                 doc_count = CALC_PRINT_TICKETS
             else:
-                doc_count = 0
+                doc_count = 1
             print_receipt(printer.name, str(document_number), doc_count,
                           datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
