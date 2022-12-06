@@ -14,6 +14,7 @@ left join ch_position ch on cp.id = ch.id_purchase
 where 
 	cp.datecommit >= current_timestamp - interval '3 minute'
 	and cp.cashoperation = 0
+    and cp.operationtype = True
 group by 
 	cs.cashnum,
 	cs.numshift,
