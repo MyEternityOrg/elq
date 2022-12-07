@@ -21,7 +21,7 @@ def get_windows_printer_by_name(my_printer: str = 'SAM4S'):
 
 
 def create_pdf():
-    page_size = tuple([46.0, 60.0])
+    page_size = tuple([46.0, 120.0])
     pdf = FPDF(format=page_size)
     pdf.set_margins(1, 1, 1)
     pdf.auto_page_break = False
