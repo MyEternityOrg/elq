@@ -29,7 +29,7 @@ class Printer(models.Model):
         return f'{self.name} ({self.ip_address})'
 
     @staticmethod
-    def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0):
+    def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0, wares: list = []):
         if printer is not None:
             if CALC_PRINT_TICKETS == -1:
                 doc_count += 1
@@ -38,7 +38,7 @@ class Printer(models.Model):
             else:
                 doc_count = 1
             print_receipt(printer.name, str(document_number), doc_count,
-                          datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
+                          datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), wares)
 
     class Meta:
         indexes = [models.Index(fields=['name'])]
