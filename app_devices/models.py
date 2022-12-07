@@ -32,7 +32,7 @@ class Printer(models.Model):
     def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0, wares: list = []):
         if printer is not None:
             if CALC_PRINT_TICKETS == -1:
-                doc_count += 1
+                doc_count += 2
             elif CALC_PRINT_TICKETS > 0:
                 doc_count = CALC_PRINT_TICKETS
             else:
