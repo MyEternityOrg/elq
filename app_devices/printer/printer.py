@@ -21,7 +21,7 @@ def get_windows_printer_by_name(my_printer: str = 'SAM4S'):
 
 
 def create_pdf():
-    page_size = tuple([46.0, 60.0])
+    page_size = tuple([46.0, 120.0])
     pdf = FPDF(format=page_size)
     pdf.set_margins(1, 1, 1)
     pdf.auto_page_break = False
@@ -38,15 +38,20 @@ def write_pdf(pdf, offset_y: int = 0, text: str = '', size: int = 8):
 
 
 def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1,
-                  dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')):
+                  dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), wares: list = []):
     print(f'Printing document: {receipt_id} - {receipt_count} times.')
     if platform.system() == 'Linux':
+        offset = 39
         data = create_pdf()
         write_pdf(data, 3, 'Электронная очередь', 8)
         write_pdf(data, 18, f'№ {receipt_id}', 32)
         write_pdf(data, 33, f"{dts}", 8)
-        write_pdf(data, 39, 'Приятного аппетита :)', 8)
-        write_pdf(data, 42, '-----------', 8)
+        if wares is not None:
+            for k in wares:
+                write_pdf(data, offset, k)
+                offset += 3
+        write_pdf(data, offset + 3, 'Приятного аппетита :)', 8)
+        write_pdf(data, offset + 6, '-----------', 8)
         data.output("receipt.pdf")
         conn = cups.Connection()
         print(cups.getServer())
@@ -65,8 +70,10 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
                     printer.width = 2048
                     printer.text("Электронная очередь", align="center", font_config={"height": 12})
                     printer.text(f'№ {receipt_id}', align="center", font_config={"height": 24})
-                    printer.text(f"{dts}", align="center",
-                                 font_config={"height": 12})
+                    printer.text(f"{dts}", align="center", font_config={"height": 12})
+                    if wares is not None:
+                        for k in wares:
+                            printer.text(k, align="center", font_config={"height": 12})
                     printer.text("Приятного аппетита :)", align="center",
                                  font_config={"height": 12})
                     printer.text('-----------')

@@ -27,7 +27,7 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
                 json_input = json.loads(self.request.body)
                 print(f'Receive data : {json_input}')
                 if type(json_input) is dict:
-                    result, msg, json_reply_number, printer, doc_count = ImportedChecks.register_cash_check(
+                    result, msg, json_reply_number, printer, doc_count, wares = ImportedChecks.register_cash_check(
                         json_input.get('cash_id', 0),
                         json_input.get('shift_id', 1),
                         json_input.get('check_id', 0),
@@ -35,7 +35,8 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
                                        now),
                         json_input.get('wares', []))
                     if result:
-                        Printer.print_document(printer, json_reply_number, json_input.get('check_date', now), doc_count)
+                        Printer.print_document(printer, json_reply_number, json_input.get('check_date', now), doc_count,
+                                               wares)
                     else:
                         json_reply_error = msg
             except Exception as E:
