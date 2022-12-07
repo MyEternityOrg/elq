@@ -49,9 +49,9 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
         if wares is not None:
             for k in wares:
                 write_pdf(data, offset, k)
-                offset += 3
-        write_pdf(data, offset + 3, 'Приятного аппетита :)', 8)
-        write_pdf(data, offset + 6, '-----------', 8)
+                offset += 6
+        write_pdf(data, offset + 6, 'Приятного аппетита :)', 8)
+        write_pdf(data, offset + 12, '-----------', 8)
         data.output("receipt.pdf")
         conn = cups.Connection()
         print(cups.getServer())
