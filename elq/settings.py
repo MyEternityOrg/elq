@@ -16,6 +16,18 @@ except Exception as E:
     print(f'Error: {E}')
     CALC_PRINT_TICKETS = 0
 
+try:
+    PRINT_PAPER_W = int(os.getenv('PRINT_PAPER_W'))
+except Exception as E:
+    print(f'Using default paper width: 57mm')
+    PRINT_PAPER_W = 57
+
+try:
+    PRINT_PAPER_H = int(os.getenv('PRINT_PAPER_H'))
+except Exception as E:
+    print(f'Using default paper len: 120mm')
+    PRINT_PAPER_H = 120
+
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 

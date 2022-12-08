@@ -138,3 +138,4 @@ dmypy.json
 /media/django-summernote/
 /examples/print/arial.pkl
 /api_import_receipts/main.json
+/app_devices/printer/demo_receipt.pdf

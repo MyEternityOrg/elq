@@ -1,10 +1,11 @@
 import datetime
 import os
 import platform
+from fpdf import FPDF
+from elq.settings import PRINT_PAPER_W, PRINT_PAPER_H
 
 if platform.system() == 'Linux':
     import cups
-    from fpdf import FPDF
 elif platform.system() == 'Windows':
     import win32print
     from win32printing import Printer
@@ -21,7 +22,7 @@ def get_windows_printer_by_name(my_printer: str = 'SAM4S'):
 
 
 def create_pdf():
-    page_size = tuple([46.0, 120.0])
+    page_size = tuple([float(PRINT_PAPER_W), float(PRINT_PAPER_H)])
     pdf = FPDF(format=page_size)
     pdf.set_margins(1, 1, 1)
     pdf.auto_page_break = False
@@ -37,6 +38,13 @@ def write_pdf(pdf, offset_y: int = 0, text: str = '', size: int = 8):
     return pdf
 
 
+def prepare_print_line(inline: str):
+    print_line_ware = str(inline).split(',')[0]
+    print_line_count = str(inline).split(',')[1]
+    return print_line_ware[
+           :PRINT_PAPER_W - 28 - len(print_line_count)].rstrip().lstrip() + '   ' + print_line_count.rstrip().lstrip()
+
+
 def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1,
                   dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), wares: list = []):
     print(f'Printing document: {receipt_id} - {receipt_count} times.')
@@ -48,10 +56,10 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
         write_pdf(data, 33, f"{dts}", 8)
         if wares is not None:
             for k in wares:
-                write_pdf(data, offset, k)
+                write_pdf(data, offset, prepare_print_line(k))
                 offset += 6
         write_pdf(data, offset + 6, 'Приятного аппетита :)', 8)
-        write_pdf(data, offset + 12, '-----------', 8)
+        write_pdf(data, offset + 12, '______________________', 8)
         data.output("receipt.pdf")
         conn = cups.Connection()
         print(cups.getServer())
@@ -81,4 +89,23 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
 
 
 if __name__ == "__main__":
-    print_receipt('ELLIX50', '1230', 4)
+    doc = FPDF(format=tuple([float(PRINT_PAPER_W), float(PRINT_PAPER_H)]))
+    doc.set_margins(1, 1, 1)
+    doc.auto_page_break = False
+    doc.add_font('Arial', '', 'arial.ttf', uni=True)
+    doc.add_page(orientation='P')
+    offset = 42
+    write_pdf(doc, 3, 'Электронная очередь', 8)
+    write_pdf(doc, 18, f'№ 999999', 32)
+    write_pdf(doc, 33, f"{datetime.datetime.today().strftime('%Y-%m-%d %H:%M')}", 8)
+    for k in [
+        'Очень длинное тестовое наименование товара товара, 9999.0',
+        'Длинное тестовое наименование товара, 666.0',
+        'Среднее наименование товара, 66.0',
+        'Короткое имя товара, 1.0'
+    ]:
+        write_pdf(doc, offset, prepare_print_line(k))
+        offset += 6
+    write_pdf(doc, offset + 6, 'Приятного аппетита :)', 8)
+    write_pdf(doc, offset + 12, '-----------', 8)
+    doc.output("demo_receipt.pdf")
