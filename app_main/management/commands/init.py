@@ -66,20 +66,3 @@ class Command(BaseCommand):
                                     pg_db_name='set_operday',
                                     pg_login='set',
                                     pg_password='set', printer_guid=Printer.objects.first())
-
-        print('Optimizing...')
-        finished_state = [e.id for e in Status.objects.filter(finished=True)]
-        clear_arr = Document.objects.filter(status_id__in=finished_state)
-        total_docs = len(clear_arr)
-        total_wares = 0
-        total_history = 0
-        for el in clear_arr:
-            doc = Document.objects.get(guid=el.guid)
-            wares = DocumentWare.objects.filter(document_guid=doc.guid)
-            total_wares += len(wares)
-            for ware in wares:
-                total_history += len(DocumentHistory.objects.filter(document_ware_guid=ware.guid))
-                DocumentHistory.objects.filter(document_ware_guid=ware.guid).delete()
-                ware.delete()
-            doc.delete()
-        print(f'Optimization: Done, removed: {total_docs} docs, {total_wares} lines, {total_history} history records.')
