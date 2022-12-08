@@ -2,13 +2,14 @@ from django.contrib import admin
 from .models import *
 
 
-class DocumetLine(admin.StackedInline):
+class DocumentLine(admin.StackedInline):
     model = DocumentWare
+    fields = ['ware_guid', 'ware_count']
     extra = 0
 
 
 class DocWare(admin.ModelAdmin):
-    inlines = [DocumetLine]
+    inlines = [DocumentLine]
 
 
 admin.site.register(Status)
