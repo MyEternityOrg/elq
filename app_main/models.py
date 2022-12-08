@@ -61,7 +61,7 @@ class Ware(models.Model):
                             db_column='code')
     full_name = models.CharField(null=False, max_length=128, verbose_name='Название товара (полное)',
                                  db_column='f_name')
-    short_name = models.CharField(null=False, max_length=64, verbose_name='Название товара (сокращенное)',
+    short_name = models.CharField(null=False, max_length=24, verbose_name='Название товара (сокращенное)',
                                   db_column='s_name')
     department_guid = models.ForeignKey(Department, null=False, on_delete=models.CASCADE,
                                         verbose_name='Отдел производства товара', db_column='department_guid')

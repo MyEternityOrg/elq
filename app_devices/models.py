@@ -32,10 +32,13 @@ class Printer(models.Model):
     def print_document(printer, document_number: int, dts: datetime.date = now, doc_count: int = 0, wares: list = []):
         if printer is not None:
             if CALC_PRINT_TICKETS == -1:
+                # Печать по количеству отделов в слипе + 2 слипа
                 doc_count += 2
             elif CALC_PRINT_TICKETS > 0:
+                # Печать строго заданного количества.
                 doc_count = CALC_PRINT_TICKETS
             else:
+                # Печатать по 1 слипу - для режима обучения, демонстраций.
                 doc_count = 1
             print_receipt(printer.name, str(document_number), doc_count,
                           datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), wares)
