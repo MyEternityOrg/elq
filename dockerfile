@@ -49,4 +49,4 @@ RUN cd elq && python3 manage.py migrate && python3 manage.py init
 
 EXPOSE 8000
 EXPOSE 631
-CMD cd elq && git pull origin master && service cups restart && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000
+CMD cd elq && git pull origin master && service cups restart && python3 manage.py migrate && python3 manage.py init && python3 manage.py runserver 0.0.0.0:8000
