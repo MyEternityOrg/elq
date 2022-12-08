@@ -41,7 +41,7 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
                   dts: str = datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), wares: list = []):
     print(f'Printing document: {receipt_id} - {receipt_count} times.')
     if platform.system() == 'Linux':
-        offset = 39
+        offset = 42
         data = create_pdf()
         write_pdf(data, 3, 'Электронная очередь', 8)
         write_pdf(data, 18, f'№ {receipt_id}', 32)
