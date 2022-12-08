@@ -9,4 +9,5 @@ venv\Scripts\pip install win32printing
 IF NOT EXIST .env copy .env.sample .env
 venv\scripts\python.exe manage.py migrate
 venv\scripts\python.exe manage.py init
+venv\scripts\python.exe manage.py maintenance
 venv\Scripts\python manage.py runserver
