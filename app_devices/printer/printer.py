@@ -42,7 +42,7 @@ def prepare_print_line(inline: str):
     print_line_ware = str(inline).split(',')[0]
     print_line_count = str(inline).split(',')[1]
     return print_line_ware[
-           :PRINT_PAPER_W - 30 - len(print_line_count)].rstrip().lstrip() + '   ' + print_line_count.rstrip().lstrip()
+           :PRINT_PAPER_W - 32 - len(print_line_count)].rstrip().lstrip() + '   ' + print_line_count.rstrip().lstrip()
 
 
 def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receipt_count: int = 1,
