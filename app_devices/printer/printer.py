@@ -91,10 +91,13 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
 
 
 if __name__ == "__main__":
+    cpath = os.path.abspath(__file__).replace(os.path.basename(__file__), '')
+    path = cpath + 'arial.ttf'
+    int_printer_name = 'p1'
     doc = FPDF(format=tuple([float(PRINT_PAPER_W), float(PRINT_PAPER_H)]))
     doc.set_margins(1, 1, 1)
     doc.auto_page_break = False
-    doc.add_font('Arial', '', 'arial.ttf', uni=True)
+    doc.add_font('Arial', '', f'{path}', uni=True)
     doc.add_page(orientation='P')
     offset = 42
     write_pdf(doc, 3, 'Электронная очередь', 8)
@@ -110,4 +113,14 @@ if __name__ == "__main__":
         offset += 6
     write_pdf(doc, offset + 6, 'Приятного аппетита :)', 8)
     write_pdf(doc, offset + 12, '-----------', 8)
-    doc.output("demo_receipt.pdf")
+    doc.output(f"{cpath}{int_printer_name}_receipt.pdf")
+    conn = cups.Connection()
+    print(cups.getServer())
+    printers = conn.getPrinters()
+    for printer in printers:
+        print(f'Cups printer: {printer}, input name printer {int_printer_name}')
+        if str(printer).lower() == int_printer_name.lower():
+            for i in range(1, int_printer_name + 1):
+                conn.printFile(printer, f"{cpath}{int_printer_name}_receipt.pdf", "document", {"page-left": "1"})
+        if os.path.exists(f"{cpath}{int_printer_name}_receipt.pdf"):
+            os.remove(f"{cpath}{int_printer_name}_receipt.pdf")
