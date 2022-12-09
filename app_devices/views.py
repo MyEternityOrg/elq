@@ -35,6 +35,7 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
                                        now),
                         json_input.get('wares', []))
                     if result:
+                        print(f'Printing receipt {printer}')
                         Printer.print_document(printer, json_reply_number, json_input.get('check_date', now), doc_count,
                                                wares)
                     else:
