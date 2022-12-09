@@ -13,8 +13,9 @@ from ch_shift cs
 where cp.datecommit >= current_timestamp - interval '3 minute'
   and cp.cashoperation = 0
   and cp.operationtype = True
+  and cp.checkstatus  = 0
 group by cs.cashnum,
-         cs.numshift,
-         cs.shiftopen,
-         cp.numberfield,
-         ch.item
+    cs.numshift,
+    cs.shiftopen,
+    cp.numberfield,
+    ch.item
