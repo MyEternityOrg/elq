@@ -60,15 +60,15 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
                 offset += 6
         write_pdf(data, offset + 6, 'Приятного аппетита :)', 8)
         write_pdf(data, offset + 12, '______________________', 8)
-        data.output("receipt.pdf")
+        data.output(f"{printer_name}_receipt.pdf")
         conn = cups.Connection()
         print(cups.getServer())
         printers = conn.getPrinters()
         for printer in printers:
             if str(printer).lower() == printer_name.lower():
                 for i in range(1, receipt_count + 1):
-                    conn.printFile(printer, "receipt.pdf", "document", {"page-left": "1"})
-            os.remove("receipt.pdf")
+                    conn.printFile(printer, f"{printer_name}_receipt.pdf", "document", {"page-left": "1"})
+            os.remove(f"{printer_name}_receipt.pdf")
 
     elif platform.system() == 'Windows':
         printer = get_windows_printer_by_name(printer_name)
