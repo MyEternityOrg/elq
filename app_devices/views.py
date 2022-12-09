@@ -39,6 +39,7 @@ class ImportReceiptData(BaseClassContextMixin, TemplateView):
                         Printer.print_document(printer, json_reply_number, json_input.get('check_date', now), doc_count,
                                                wares)
                     else:
+                        print(f'Nothing to print on {printer.name}, reason: {msg}')
                         json_reply_error = msg
             except Exception as E:
                 print(f'Error: {E}')
