@@ -68,7 +68,8 @@ def print_receipt(printer_name: str = 'SAM4S', receipt_id: str = '99999', receip
             if str(printer).lower() == printer_name.lower():
                 for i in range(1, receipt_count + 1):
                     conn.printFile(printer, f"{printer_name}_receipt.pdf", "document", {"page-left": "1"})
-            os.remove(f"{printer_name}_receipt.pdf")
+            if os.path.exists(f"{printer_name}_receipt.pdf"):
+                os.remove(f"{printer_name}_receipt.pdf")
 
     elif platform.system() == 'Windows':
         printer = get_windows_printer_by_name(printer_name)
