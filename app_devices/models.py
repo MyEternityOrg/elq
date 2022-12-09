@@ -40,6 +40,7 @@ class Printer(models.Model):
             else:
                 # Печатать по 1 слипу - для режима обучения, демонстраций.
                 doc_count = 1
+            print(f'Printing {printer.name} - receipt {document_number} amount: {doc_count}')
             print_receipt(printer.name, str(document_number), doc_count,
                           datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), wares)
 
@@ -183,6 +184,7 @@ class ImportedChecks(models.Model):
             return False, f'Invalid cash number, registered numbers are:' \
                           f' {[c.cash_number for c in Cash.objects.all()]}', doc_number, doc_printer, doc_count, None
         doc_printer = cash_guid.printer_guid
+        print(f'Cash {cash_guid} printer {doc_printer} found.')
         imported_check = ImportedChecks.objects.filter(cash_guid=cash_guid,
                                                        check_date=i_check_date, shift_id=i_shift_id).first()
         if imported_check is not None:
