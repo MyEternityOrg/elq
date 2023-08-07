@@ -4,5 +4,5 @@ Django==4.2.3
 sqlparse==0.4.4
 tzdata==2023.3
 fpdf==1.7.2
-psycopg2-binary==2.9.6
+psycopg2-binary==2.9.7
 pycups==2.0.1
